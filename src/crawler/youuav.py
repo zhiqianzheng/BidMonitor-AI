@@ -15,7 +15,7 @@ class YouuavCrawler(BaseCrawler):
     
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
-        self.search_keywords = config.get('search_keywords', ['无人机', '航拍', 'UAV', '光伏'])
+        self.search_keywords = config.get('search_keywords', [])
     
     def get_list_urls(self) -> List[str]:
         """中国无人机网 - 只使用首页"""

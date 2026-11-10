@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BidMonitor · 招标与销售线索工作台</title>
+  <link rel="stylesheet" href="/assets/app.css?v=refine-keyword-1"><script src="/assets/app.js?v=refine-keyword-1" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#search"><span class="brand-mark">B<span>·</span></span><span>BidMonitor<small>招标与销售线索</small></span></a>
+    <div class="workspace"><span class="workspace-avatar">团</span><div>我的团队工作台<small>本地版 · V1</small></div><span class="live-dot"></span></div>
+    <div class="nav-label">工作空间</div>
+    <nav aria-label="主导航">
+      <a href="#search" data-page="search"><span class="nav-icon">⌕</span>标讯搜索<span class="nav-count" id="navProjects">0</span></a>
+      <a href="#leads" data-page="leads"><span class="nav-icon">▤</span>线索跟进<span class="nav-count" id="navLeads">0</span></a>
+      <a href="#settings" data-page="settings"><span class="nav-icon">⚙</span>数据与成员</a>
+    </nav>
+    <div class="sidebar-bottom"><span class="live-dot"></span> 数据保存在本机<small>先发现机会，再推进成交。</small></div>
+  </aside>
+  <div class="app-shell">
+    <header class="topbar"><div><span class="muted">工作空间</span><span class="slash">/</span><span id="breadcrumb">标讯搜索</span></div><div class="top-actions"><span class="local-badge">LOCAL WORKSPACE</span><span class="avatar">我</span></div></header>
+    <main>
+      <section class="page active" id="page-search">
+        <div class="page-heading"><div><div class="eyebrow">DISCOVER OPPORTUNITIES</div><h1>找到值得跟进的项目</h1><p>全行业 · 工程 / 货物 / 服务 · 默认隐藏已截止及结果类公告，优先发现新机会。</p></div><button class="button primary" id="collectButton">↻ 采集最新公告</button></div>
+        <div class="stats" id="stats"></div>
+        <form class="search-box" id="searchForm">
+          <div class="search-line"><span class="search-symbol">⌕</span><input id="query" name="q" aria-label="搜索关键词" placeholder="搜索项目、采购单位或项目编号，多个词用空格分隔" maxlength="300"><select id="scope" aria-label="搜索范围"><option value="all">全文搜索</option><option value="title">只搜标题</option></select><button class="button primary" type="submit">搜索标讯</button></div>
+          <div class="filters"><label>截止状态<select id="availability"><option value="active">隐藏已截止 / 已结束</option><option value="open">仅明确未截止</option><option value="unknown">截止待核实</option><option value="closed">已截止 / 已结束</option><option value="all">全部公告（含历史）</option></select></label><label>行业<select id="industry"><option value="">全部行业</option></select></label><label>采购类别<select id="category"><option value="">工程 / 货物 / 服务</option></select></label><label>地区<select id="region"><option value="">全部地区</option></select></label><div class="filter-field"><span id="noticeTypeLabel">公告类型 · 可多选</span><details id="noticeType" class="multi-select"><summary aria-labelledby="noticeTypeLabel noticeTypeSummary"><span id="noticeTypeSummary">全部类型</span><span aria-hidden="true">⌄</span></summary><div class="multi-panel"><div class="multi-actions"><button type="button" class="text-button" id="noticeTypeAll">全选</button><button type="button" class="text-button" id="noticeTypeClear">清除筛选</button></div><div id="noticeTypeOptions" role="group" aria-label="选择公告类型"></div><small>可勾选多个；未勾选时不限类型</small></div></details></div><label>来源<select id="source"><option value="">全部来源</option></select></label><label>发布起始<input type="date" id="dateFrom"></label><label>发布截止<input type="date" id="dateTo"></label><div class="filter-field refine-filter"><label for="refineQuery">结果内关键词 · 二次筛选</label><div class="refine-line"><input id="refineQuery" type="search" maxlength="300" placeholder="例如：设备 维修（全部匹配）" aria-describedby="refineHelp"><button class="button" type="submit">应用关键词</button><button class="text-button" type="button" id="clearRefine">清除</button></div><small id="refineHelp">与上方关键词及所有筛选条件同时满足；多个词用空格分隔。沿用上方全文 / 标题范围。</small></div></div>
+          <div class="search-bottom"><label class="check"><input type="checkbox" id="tracked"> 仅看已加入线索池</label><span class="muted">截止按北京时间判断；仅有日期的按当日结束判断，未知时间需核对原文</span><button type="button" class="text-button" id="resetSearch">重置筛选</button></div>
+        </form>
+        <div class="section-toolbar"><div><h2>公告库 <span id="resultCount" class="count-label">0 条</span></h2><span class="muted" id="resultHint">按发布日期排序 · 日期未知的公告置后</span></div><div class="toolbar-actions"><button class="button" id="exportButton">↓ 导出结果</button><button class="button" id="addProjectButton">＋ 录入项目</button></div></div>
+        <div id="projectResults" aria-live="polite"></div>
+        <div class="pagination"><span id="pageInfo"></span><div><button class="button" id="prevPage">上一页</button><button class="button" id="nextPage">下一页</button></div></div>
+      </section>
+      <section class="page" id="page-leads">
+        <div class="page-heading"><div><div class="eyebrow">TURN INTEREST INTO PROGRESS</div><h1>让每条线索都有下一步</h1><p>按负责人和阶段推进机会，保留每一次沟通与决策。</p></div><a class="button primary" href="#search">＋ 从公告库添加</a></div>
+        <div class="stage-summary" id="stageSummary"></div>
+        <div class="lead-filters"><input id="leadQuery" placeholder="搜索线索标题" aria-label="搜索线索标题"><select id="leadOwner" aria-label="筛选负责人"></select><select id="leadStage" aria-label="筛选阶段"></select><label class="check"><input type="checkbox" id="dueOnly"> 仅看到期未完成</label><button class="button" id="refreshLeads">刷新</button></div>
+        <div class="section-toolbar"><h2>团队线索 <span class="count-label" id="leadCount"></span></h2><span class="muted">跟进时间采用本机时区</span></div>
+        <div class="table-wrap"><table class="lead-table"><thead><tr><th>项目 / 采购单位</th><th>阶段</th><th>负责人</th><th>优先级</th><th>下次跟进</th><th></th></tr></thead><tbody id="leadRows"></tbody></table><div id="leadEmpty"></div></div>
+      </section>
+      <section class="page" id="page-settings">
+        <div class="page-heading"><div><div class="eyebrow">YOUR DATA, YOUR WORKSPACE</div><h1>数据与团队成员</h1><p>了解数据来自哪里，明确下一步由谁负责。</p></div></div>
+        <div id="sourceStats" class="stats"></div>
+        <div class="settings-grid"><article class="panel"><div class="panel-title"><h2>自动更新</h2><span class="tag green">本机调度</span></div>
+          <p>后台按计划更新已启用来源。关闭网页后仍可采集，电脑休眠、关机或退出后台服务期间暂停；重新运行后会补执行到期任务。</p>
+          <form id="scheduleForm"><label class="check"><input id="scheduleEnabled" type="checkbox"> 启用定时更新</label>
+            <div class="form-grid"><label>更新间隔（分钟）<input id="scheduleInterval" type="number" min="15" max="1440" required value="60"></label><label>每个来源 / 栏目页数<input id="schedulePages" type="number" min="1" max="20" required value="3"></label></div>
+            <p class="muted">省站接口分别读取最新页与补采页。首次补采近 7 天，后续保留 2 天重叠；未读完的分页会在下轮继续。受限来源请结合原站核对。</p>
+            <div class="form-footer"><span class="muted">默认每小时；单来源失败逐步延长重试间隔。</span><button class="button primary" type="submit">保存更新计划</button></div>
+          </form><div id="scheduleStatus" class="notice"></div>
+          <div class="collection-status" id="collectionStatus"></div><progress id="collectionProgress" max="1" value="0" aria-label="采集进度"></progress>
+          <div class="toolbar-actions"><button class="button primary" id="provincialCollect">采集省站直连</button><button class="button" id="settingsCollect">开始采集</button><button class="button" id="stopCollect">停止采集</button></div></article>
+        <article class="panel"><h2>团队成员</h2><p>成员用于分配线索负责人。本机版暂不提供独立账号和访问权限；服务仅监听本机地址。</p><form id="memberForm" class="inline-form"><input name="name" placeholder="输入成员姓名" required maxlength="50" aria-label="新成员姓名"><button class="button primary">添加</button></form><div class="member-list" id="memberList"></div><div class="notice" id="timezoneInfo"></div></article></div>
+        <article class="panel source-panel"><div class="panel-title"><div><h2>全国数据源</h2><p>31 个省级地区的采购与公共资源频道，以及主要企业采购平台。</p></div><span class="tag">来源可追溯</span></div>
+          <div class="notice">“全国平台汇聚”读取官方平台已汇聚的公告，不等于省站或企业站直连、全量覆盖。当前采集最近公告列表；汇聚频道查询近三天，按页数上限读取。尚未适配、空窗口、访问失败均单独标注，不以登记网址冒充接入成功。</div>
+          <div class="source-filters"><input id="sourceQuery" placeholder="搜索平台名称" aria-label="搜索数据源"><select id="sourceKind" aria-label="来源类别"><option value="">全部类别</option><option>政府采购</option><option>公共资源</option><option>企业招标</option></select><select id="sourceProvince" aria-label="来源省份"><option value="">全部地区</option></select><select id="sourceChannel" aria-label="采集通道"><option value="">全部通道</option><option value="direct">省站直采</option><option value="national">全国汇聚补充</option></select><select id="sourceHealth" aria-label="采集状态"><option value="">全部状态</option><option value="data">已有公告</option><option value="empty">尚无入库数据</option><option value="backfill">有待续采页</option><option value="problem">需要关注</option><option value="pending">尚未验证</option><option value="disabled">已停用</option></select></div>
+          <div id="sourceList"></div><div class="pagination"><span id="sourceCount"></span><button class="button" id="moreSources">显示更多来源</button></div>
+        </article>
+        <article class="panel run-panel"><h2>最近采集记录</h2><div id="runList"></div></article>
+      </section>
+    </main>
+    <footer>BidMonitor 工作台<span>公开信息辅助研判 · 投标要求请核对公告原文</span></footer>
+  </div>
+  <dialog id="detailDialog" class="detail-dialog"><div class="drawer-top"><span>项目详情</span><div><button class="text-button" id="copyProjectLink">复制工作台链接</button><button class="close-button" id="closeDetail" aria-label="关闭项目详情">×</button></div></div><div id="detailBody"></div></dialog>
+  <dialog id="projectDialog" class="form-dialog"><form id="projectForm"><div class="dialog-heading"><div><h2>录入项目</h2><p>保存公开公告或团队已知的商机，未知字段可留空。</p></div><button type="button" class="close-button" id="closeProject" aria-label="关闭录入">×</button></div><div class="form-grid"><label class="full">项目标题<input name="title" required minlength="4" maxlength="500"></label><label class="full">原文链接<input name="url" type="url" placeholder="https://…（可选）" maxlength="2000"></label><label>公告类型<select name="notice_type" id="newNoticeType"></select></label><label>来源<input name="source" value="手动录入" maxlength="100"></label><label>行业（可自填校正）<input name="industry" id="newIndustry" list="industryOptions" maxlength="60" value="待分类"><datalist id="industryOptions"></datalist></label><label>采购类别<select name="category" id="newCategory"><option>待分类</option><option>工程</option><option>货物</option><option>服务</option></select></label><label>地区<input name="region" maxlength="100" placeholder="例如：江苏省"></label><label>预算金额<input name="budget" maxlength="100" placeholder="按原文填写，保留单位"></label><label>发布日期<input name="published_at" type="date"></label><label>投标截止<input name="deadline" type="datetime-local"></label><label>采购单位<input name="purchaser" maxlength="200"></label><label>项目编号<input name="project_no" maxlength="150"></label><label class="full">公告正文 / 项目说明<textarea name="content" rows="5" maxlength="200000"></textarea></label></div><div class="form-footer"><span class="muted">相同原文链接会更新已有公告。</span><button class="button primary" type="submit">保存项目</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>

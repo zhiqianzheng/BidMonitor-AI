@@ -2,7 +2,7 @@
 自定义通用爬虫 - 用于用户添加的网站
 """
 from typing import List
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 from datetime import datetime
 from .base import BaseCrawler, BidInfo
 
@@ -24,7 +24,6 @@ class CustomCrawler(BaseCrawler):
     def parse(self, html: str) -> List[BidInfo]:
         soup = self.parse_html(html)
         bids = []
-        today = datetime.now().strftime('%Y-%m-%d')
         
         # 提取所有链接
         seen_urls = set()
@@ -41,6 +40,8 @@ class CustomCrawler(BaseCrawler):
                 
             # 补全URL
             full_url = urljoin(self.url, href)
+            if urlsplit(full_url).scheme.lower() not in ('http', 'https'):
+                continue
             
             if full_url in seen_urls:
                 continue
@@ -52,7 +53,7 @@ class CustomCrawler(BaseCrawler):
             bids.append(BidInfo(
                 title=text,
                 url=full_url,
-                publish_date=today, # 通用爬虫很难准确提取日期，使用当前日期
+                publish_date="",  # 未提取到发布日期，不能用抓取日期替代
                 source=self.name
             ))
             

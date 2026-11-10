@@ -16,7 +16,7 @@ class PLAPCrawler(BaseCrawler):
     
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
-        self.search_keywords = config.get('search_keywords', ['无人机', 'UAV'])
+        self.search_keywords = config.get('search_keywords', [])
     
     def get_list_urls(self) -> List[str]:
         """生成URL列表"""
@@ -45,10 +45,10 @@ class PLAPCrawler(BaseCrawler):
                 if not title or len(title) < 5:
                     continue
                 
-                # 检查是否包含无人机相关关键字
+                # 仅在用户设置关键词时筛选
                 keywords_lower = [kw.lower() for kw in self.search_keywords]
                 title_lower = title.lower()
-                if not any(kw in title_lower for kw in keywords_lower):
+                if keywords_lower and not any(kw in title_lower for kw in keywords_lower):
                     continue
                 
                 url = title_elem.get('href', '')

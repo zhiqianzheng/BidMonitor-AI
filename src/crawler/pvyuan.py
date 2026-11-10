@@ -15,7 +15,7 @@ class PvyuanCrawler(BaseCrawler):
     
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
-        self.search_keywords = config.get('search_keywords', ['光伏', '风电', '无人机'])
+        self.search_keywords = config.get('search_keywords', [])
     
     def get_list_urls(self) -> List[str]:
         """光伏园网 - 只使用首页"""

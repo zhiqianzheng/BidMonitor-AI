@@ -15,12 +15,12 @@ class GGZYCrawler(BaseCrawler):
     
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
-        self.search_keywords = config.get('search_keywords', ['无人机', '光伏', '风电'])
+        self.search_keywords = config.get('search_keywords', [])
     
     def get_list_urls(self) -> List[str]:
         """生成搜索URL列表"""
         urls = []
-        for keyword in self.search_keywords:
+        for keyword in (self.search_keywords or ['']):
             # 公共资源交易平台搜索接口
             url = f"http://deal.ggzy.gov.cn/ds/deal/dealList_find.jsp?TIMEBEGIN_SHOW=&TIMEEND_SHOW=&TIMEBEGIN=&TIMEEND=&SOURCE_TYPE=&DEAL_TIME=02&DEAL_CLASSIFY=01&DEAL_STAGE=&DEAL_PROVINCE=&DEAL_CITY=&DEAL_PLATFORM=&BID_PLATFORM=&DEAL_TRADE=&isShowAll=1&KEYWORD={keyword}&TIME=6"
             urls.append(url)

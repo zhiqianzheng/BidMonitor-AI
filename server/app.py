@@ -8,16 +8,17 @@ import json
 import asyncio
 import logging
 import threading
+import copy
 from datetime import datetime
 from typing import Optional, Dict, Any, List
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, Request, Response
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, Request, Response, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import secrets
 
 # 添加 src 目录到路径
@@ -92,12 +93,12 @@ def verify_credentials(credentials: HTTPBasicCredentials = Depends(security)):
 def load_config() -> Dict[str, Any]:
     """加载配置"""
     default_config = {
-        'keywords': '光伏,风电,风力发电,光伏巡检,风电巡检,无人机巡检,光伏无人机,风机巡检,风力发电巡检,光伏电站无人机,风电场无人机,光伏运维,风机运维,叶片巡检,红外巡检,新能源巡检',
-        'exclude': '大疆',
-        'must_contain': '无人机',
+        'keywords': '',
+        'exclude': '',
+        'must_contain': '',
         'interval': 10,
         'enabled_sites': [
-            'chinabidding', 'dlzb', 'chinabiddingcc', 'gdtzb', 'cpeinet', 'espic',
+            'ccgp', 'chinabidding', 'dlzb', 'chinabiddingcc', 'gdtzb', 'cpeinet', 'espic',
             'chng', 'powerchina', 'powerchina_bid', 'powerchina_ec', 'powerchina_scm',
             'powerchina_idx', 'powerchina_nw', 'ceec', 'chdtp', 'chec_gys', 'chinazbcg',
             'cdt', 'ebidding', 'neep', 'ceic', 'sgcc', 'cecep', 'gdg', 'crpower', 'crc',
@@ -163,7 +164,7 @@ class ConfigModel(BaseModel):
     keywords: Optional[str] = None
     exclude: Optional[str] = None
     must_contain: Optional[str] = None
-    interval: Optional[int] = None
+    interval: Optional[int] = Field(default=None, ge=1, le=10080)
     enabled_sites: Optional[List[str]] = None
     email_enabled: Optional[bool] = None
     sms_enabled: Optional[bool] = None
@@ -181,15 +182,22 @@ class StatusResponse(BaseModel):
     interval: int
 
 # 定时任务：执行监控
-async def run_monitor_task():
+async def run_monitor_task(manual=False, reserved=False):
     """执行一次监控任务"""
     # 检查是否应该运行
-    if not app_state.is_running:
+    if not manual and not app_state.is_running:
+        if reserved:
+            app_state.current_task_running = False
+        return
+
+    if app_state.current_task_running and not reserved:
         return
     
     # 检查是否被中断
     if app_state.stop_event.is_set():
         app_state.add_log("检索任务被中断")
+        if reserved:
+            app_state.current_task_running = False
         return
     
     # 标记任务正在运行
@@ -200,7 +208,7 @@ async def run_monitor_task():
     app_state.last_run_time = datetime.now()
     
     try:
-        config = app_state.config
+        config = copy.deepcopy(app_state.config)
         keywords = [k.strip() for k in config.get('keywords', '').split(',') if k.strip()]
         exclude = [k.strip() for k in config.get('exclude', '').split(',') if k.strip()]
         must_contain = [k.strip() for k in config.get('must_contain', '').split(',') if k.strip()]
@@ -217,14 +225,17 @@ async def run_monitor_task():
             exclude_keywords=exclude,
             must_contain_keywords=must_contain,
             log_callback=app_state.add_log,
-            ai_config=ai_config
+            ai_config=ai_config,
+            notify_method=None
         )
+        app_state.monitor_core = monitor
         
         # 设置启用的网站
         monitor.config['crawler'] = monitor.config.get('crawler', {})
         monitor.config['crawler']['enabled_sites'] = config.get('enabled_sites', [])
         # 使用配置中的Selenium设置
         monitor.config['crawler']['use_selenium'] = config.get('use_selenium', False)
+        monitor.config['custom_sites'] = config.get('custom_sites', [])
         if config.get('use_selenium'):
             app_state.add_log("✅ Selenium浏览器模式已启用")
         else:
@@ -246,10 +257,21 @@ async def run_monitor_task():
         
         # 在线程池中执行同步的爬虫任务，防止阻塞事件循环
         loop = asyncio.get_event_loop()
-        result = await loop.run_in_executor(
-            None,  # 使用默认线程池
-            lambda: monitor.run_once(progress_callback=progress_callback, stop_event=app_state.stop_event)
-        )
+        stop_event = app_state.stop_event
+
+        def crawl():
+            try:
+                return monitor.run_once(progress_callback=progress_callback, stop_event=stop_event)
+            finally:
+                monitor.storage.close()
+
+        worker = loop.run_in_executor(None, crawl)
+        try:
+            result = await asyncio.shield(worker)
+        except asyncio.CancelledError:
+            stop_event.set()
+            await asyncio.shield(worker)
+            raise
         
         # 检查是否被中断
         if app_state.stop_event.is_set():
@@ -261,13 +283,16 @@ async def run_monitor_task():
         app_state.add_log(f"检索完成，新增 {new_count} 条匹配招标信息")
         
         # 发送通知（如果有新结果且未被中断）
-        if new_count > 0 and not app_state.stop_event.is_set():
+        if not app_state.stop_event.is_set():
             await send_notifications(config, new_count)
         
     except Exception as e:
         app_state.add_log(f"检索任务异常: {e}")
         logger.exception("Monitor task error")
     finally:
+        if app_state.monitor_core:
+            app_state.monitor_core.storage.close()
+            app_state.monitor_core = None
         app_state.current_task_running = False
         # 清除进度信息
         app_state.progress_current = 0
@@ -307,102 +332,25 @@ async def run_monitor_task():
             )
             app_state.add_log(f"⏰ 下次检索时间: {next_run.strftime('%H:%M:%S')}")
 
-async def send_notifications(config: Dict, new_count: int):
-    """发送通知"""
-    # 使用最新的配置（支持运行期间修改配置立即生效）
-    config = app_state.config
-    
-    # 复用原有的通知模块
+async def send_notifications(config: Dict, new_count: int = 0):
+    """Deliver pending items outside the event loop, including previous failures."""
+    from notifier.service import NotificationService
+    snapshot = copy.deepcopy(config)
+    stop_event = app_state.stop_event
+
+    def deliver():
+        try:
+            NotificationService(app_state.storage, app_state.add_log).send_pending(snapshot, stop_event)
+        finally:
+            app_state.storage.close()
+
+    worker = asyncio.get_running_loop().run_in_executor(None, deliver)
     try:
-        contacts = config.get('contacts', [])
-        
-        # 获取新增的招标信息用于通知
-        unnotified_bids = app_state.storage.get_unnotified() if hasattr(app_state.storage, 'get_unnotified') else []
-        
-        for contact in contacts:
-            if not contact.get('enabled', True):
-                continue
-            
-            name = contact.get('name', '未知')
-            
-            # 邮件通知
-            if config.get('email_enabled') and contact.get('email') and contact.get('email_password'):
-                try:
-                    email_type = contact.get('email_type', 'QQ邮箱')
-                    smtp_configs = {
-                        'QQ邮箱': {'smtp_server': 'smtp.qq.com', 'smtp_port': 465, 'use_ssl': True},
-                        '163邮箱': {'smtp_server': 'smtp.163.com', 'smtp_port': 465, 'use_ssl': True},
-                        'Gmail': {'smtp_server': 'smtp.gmail.com', 'smtp_port': 587, 'use_ssl': False},
-                        'Outlook': {'smtp_server': 'smtp.office365.com', 'smtp_port': 587, 'use_ssl': False},
-                        '企业邮箱': {'smtp_server': 'smtp.exmail.qq.com', 'smtp_port': 465, 'use_ssl': True},
-                    }
-                    smtp_config = smtp_configs.get(email_type, smtp_configs['QQ邮箱'])
-                    
-                    email_config_full = {
-                        'smtp_server': smtp_config['smtp_server'],
-                        'smtp_port': smtp_config['smtp_port'],
-                        'use_ssl': smtp_config['use_ssl'],
-                        'sender': contact['email'],
-                        'password': contact['email_password'],
-                        'receiver': contact['email'],
-                    }
-                    from notifier.email import EmailNotifier
-                    notifier = EmailNotifier(email_config_full)
-                    if notifier.send(unnotified_bids[:10]):  # 最多发送10条
-                        app_state.add_log(f"📧 邮件通知成功: {name}")
-                    else:
-                        app_state.add_log(f"❌ 邮件通知失败: {name}")
-                except Exception as e:
-                    app_state.add_log(f"❌ 邮件通知异常 {name}: {e}")
-            
-            # 短信通知
-            if config.get('sms_enabled') and contact.get('phone'):
-                try:
-                    sms_config = config.get('sms_config', {})
-                    if sms_config.get('access_key_id') and sms_config.get('template_code'):
-                        from notifier.sms import SMSNotifier
-                        notifier = SMSNotifier(sms_config)
-                        summary = {'count': new_count, 'source': '招标网站'}
-                        if notifier.send(contact['phone'], summary=summary):
-                            app_state.add_log(f"📱 短信通知成功: {name}")
-                        else:
-                            app_state.add_log(f"❌ 短信通知失败: {name}")
-                except Exception as e:
-                    app_state.add_log(f"❌ 短信通知异常 {name}: {e}")
-            
-            # 语音通知
-            if config.get('voice_enabled') and contact.get('phone'):
-                try:
-                    from notifier.voice import VoiceNotifier
-                    import time
-                    time.sleep(3)  # 延迟3秒让网络恢复
-                    voice_config = config.get('voice_config', {})
-                    if voice_config.get('tts_code'):
-                        notifier = VoiceNotifier(voice_config)
-                        if notifier.call(contact['phone'], count=new_count, source="招标网站"):
-                            app_state.add_log(f"📞 语音呼叫成功: {name}")
-                        else:
-                            app_state.add_log(f"❌ 语音呼叫失败: {name}")
-                except Exception as e:
-                    app_state.add_log(f"❌ 语音通知异常 {name}: {e}")
-            
-            # 微信通知
-            if config.get('wechat_enabled') and contact.get('wechat_token'):
-                try:
-                    from notifier.wechat import WeChatNotifier
-                    notifier = WeChatNotifier({
-                        'provider': 'pushplus',
-                        'token': contact['wechat_token']
-                    })
-                    if notifier.send(unnotified_bids[:10]):  # 最多发送10条
-                        app_state.add_log(f"💬 微信通知成功: {name}")
-                    else:
-                        app_state.add_log(f"❌ 微信通知失败: {name}")
-                except Exception as e:
-                    app_state.add_log(f"❌ 微信通知异常 {name}: {e}")
-                        
-    except Exception as e:
-        app_state.add_log(f"发送通知异常: {e}")
+        await asyncio.shield(worker)
+    except asyncio.CancelledError:
+        stop_event.set()
+        await asyncio.shield(worker)
+        raise
 
 # 生命周期管理
 @asynccontextmanager
@@ -486,20 +434,13 @@ async def root():
 async def get_status():
     """获取监控状态"""
     # 统计今日新增
-    today_str = datetime.now().strftime('%Y-%m-%d')
-    all_bids = app_state.storage.get_all() if hasattr(app_state.storage, 'get_all') else []
-    
-    # publish_date 是字符串格式如 "2025-12-18"
-    today_new = 0
-    for b in all_bids:
-        if b.publish_date and b.publish_date.startswith(today_str):
-            today_new += 1
+    today_new = app_state.storage.count_today()
     
     return {
         "is_running": app_state.is_running,
         "last_run_time": app_state.last_run_time.strftime("%Y-%m-%d %H:%M:%S") if app_state.last_run_time else None,
         "next_run_time": app_state.next_run_time.strftime("%Y-%m-%d %H:%M:%S") if app_state.next_run_time else None,
-        "total_bids": len(all_bids),
+        "total_bids": app_state.storage.count_all(),
         "today_new": today_new,
         "today_rounds": app_state.today_rounds,
         "interval": app_state.config.get('interval', 20),
@@ -515,19 +456,23 @@ async def start_monitor(background_tasks: BackgroundTasks):
     """开始监控"""
     if app_state.is_running:
         return {"success": False, "message": "监控已在运行中"}
+    if app_state.current_task_running:
+        raise HTTPException(status_code=409, detail="当前任务尚未结束，请稍后重试")
     
     # 清除停止事件
-    app_state.stop_event.clear()
+    app_state.stop_event = threading.Event()
     app_state.is_running = True
+    app_state.current_task_running = True
     interval = app_state.config.get('interval', 20)
     
     # 创建调度器（不立即添加定时任务，任务完成后再调度下一次）
-    app_state.scheduler = AsyncIOScheduler()
-    app_state.scheduler.start()
+    if not app_state.scheduler or not app_state.scheduler.running:
+        app_state.scheduler = AsyncIOScheduler()
+        app_state.scheduler.start()
     
     # 立即执行一次（next_run_time会在任务完成后设置）
     app_state.next_run_time = None
-    background_tasks.add_task(run_monitor_task)
+    background_tasks.add_task(run_monitor_task, reserved=True)
     
     app_state.add_log(f"✅ 监控已启动，间隔 {interval} 分钟")
     
@@ -536,17 +481,16 @@ async def start_monitor(background_tasks: BackgroundTasks):
 @app.post("/api/stop")
 async def stop_monitor():
     """停止监控"""
-    if not app_state.is_running:
+    if not app_state.is_running and not app_state.current_task_running:
         return {"success": False, "message": "监控未在运行"}
     
     # 设置停止事件，通知正在运行的任务中断
     app_state.stop_event.set()
     app_state.is_running = False
     
-    # 关闭调度器
+    # Remove future runs without cancelling an active executor worker.
     if app_state.scheduler and app_state.scheduler.running:
-        app_state.scheduler.shutdown(wait=False)
-        app_state.scheduler = None
+        app_state.scheduler.remove_all_jobs()
     
     app_state.next_run_time = None
     app_state.add_log("⏹️ 监控已停止")
@@ -560,23 +504,14 @@ async def stop_monitor():
 @app.post("/api/run-once")
 async def run_once(background_tasks: BackgroundTasks):
     """立即执行一次检索（不需要启动监控也可使用）"""
-    # 记录原始状态
-    was_running = app_state.is_running
-    app_state.stop_event.clear()  # 确保stop_event未设置
-    
-    async def manual_run_task():
-        """手动运行任务的包装函数"""
-        # 临时设置is_running为True以允许任务执行
-        app_state.is_running = True
-        try:
-            await run_monitor_task()
-        finally:
-            # 如果原来不在运行，则恢复为停止状态
-            if not was_running:
-                app_state.is_running = False
-                app_state.next_run_time = None
-    
-    background_tasks.add_task(manual_run_task)
+    if app_state.current_task_running:
+        raise HTTPException(status_code=409, detail="当前任务尚未结束，请稍后重试")
+    app_state.current_task_running = True
+    app_state.stop_event = threading.Event()
+    app_state.next_run_time = None
+    if app_state.scheduler and app_state.scheduler.running:
+        app_state.scheduler.remove_all_jobs()
+    background_tasks.add_task(run_monitor_task, manual=True, reserved=True)
     app_state.add_log("🔍 手动触发检索...")
     return {"success": True, "message": "已开始检索"}
 
@@ -590,18 +525,22 @@ async def get_config():
 @app.post("/api/config")
 async def update_config(config: ConfigModel):
     """更新配置"""
-    update_data = config.dict(exclude_unset=True)
+    update_data = config.model_dump(exclude_unset=True, exclude_none=True)
     app_state.config.update(update_data)
     save_config(app_state.config)
     
     # 如果正在运行且间隔时间改变，重新调度
     if app_state.is_running and 'interval' in update_data:
         new_interval = update_data['interval']
-        if app_state.scheduler:
+        if app_state.scheduler and app_state.scheduler.get_job('monitor_job'):
+            from apscheduler.triggers.date import DateTrigger
+            from datetime import timedelta
+            next_run = datetime.now() + timedelta(minutes=new_interval)
             app_state.scheduler.reschedule_job(
                 'monitor_job',
-                trigger=IntervalTrigger(minutes=new_interval)
+                trigger=DateTrigger(run_date=next_run)
             )
+            app_state.next_run_time = next_run
             app_state.add_log(f"⏱️ 检索间隔已调整为 {new_interval} 分钟")
     
     return {"success": True, "message": "配置已更新"}
@@ -644,14 +583,11 @@ async def update_custom_sites(custom_sites: List[Dict[str, Any]]):
     return {"success": True, "message": "自定义网站已更新"}
 
 @app.get("/api/results")
-async def get_results(limit: int = 50, offset: int = 0):
+async def get_results(limit: int = Query(default=50, ge=1, le=500),
+                      offset: int = Query(default=0, ge=0)):
     """获取招标结果"""
-    all_bids = app_state.storage.get_all() if hasattr(app_state.storage, 'get_all') else []
-    # 按 publish_date 时间倒序（字符串格式 "2025-12-18"）
-    all_bids.sort(key=lambda x: x.publish_date or "", reverse=True)
-    
-    total = len(all_bids)
-    bids = all_bids[offset:offset + limit]
+    total = app_state.storage.count_all()
+    bids = app_state.storage.get_page(limit, offset)
     
     return {
         "total": total,
@@ -684,6 +620,8 @@ async def clear_logs():
 @app.delete("/api/history")
 async def clear_history():
     """清空历史数据"""
+    if app_state.current_task_running:
+        raise HTTPException(status_code=409, detail="请先停止检索，等待当前任务结束")
     app_state.storage.clear_all()
     app_state.add_log("🗑️ 历史数据已清空")
     return {"success": True, "message": "历史数据已清空"}
@@ -719,6 +657,10 @@ async def update_contacts(contacts: List[Dict[str, Any]]):
 @app.post("/api/config/full")
 async def update_full_config(config: Dict[str, Any]):
     """更新完整配置（包括通知配置）"""
+    if 'interval' in config:
+        value = config['interval']
+        if type(value) is not int or not 1 <= value <= 10080:
+            raise HTTPException(status_code=422, detail="监控间隔须为 1～10080 分钟")
     # 保留敏感字段如果前端没有传入
     for key in ['sms_config', 'voice_config']:
         if key in config and key in app_state.config:

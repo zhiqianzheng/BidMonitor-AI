@@ -15,7 +15,7 @@ class SolarbeCrawler(BaseCrawler):
     
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
-        self.search_keywords = config.get('search_keywords', ['光伏', '无人机', '招标'])
+        self.search_keywords = config.get('search_keywords', [])
     
     def get_list_urls(self) -> List[str]:
         """索比光伏网资讯页面"""
