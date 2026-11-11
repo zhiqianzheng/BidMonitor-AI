@@ -5,7 +5,7 @@ import time
 import logging
 from typing import List, Optional
 from datetime import datetime
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 try:
     from selenium import webdriver
@@ -72,10 +72,6 @@ class SeleniumCrawler:
             options.add_argument('--disable-gpu')
             options.add_argument('--window-size=1920,1080')
             options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-            
-            # 忽略证书错误
-            options.add_argument('--ignore-certificate-errors')
-            options.add_argument('--ignore-ssl-errors')
             
             # 禁用自动化标志
             options.add_experimental_option('excludeSwitches', ['enable-automation'])
@@ -172,7 +168,6 @@ class SeleniumCrawler:
         
         soup = BeautifulSoup(html, 'lxml')
         bids = []
-        today = datetime.now().strftime('%Y-%m-%d')
         seen_urls = set()
         
         for a in soup.find_all('a', href=True):
@@ -187,6 +182,8 @@ class SeleniumCrawler:
             
             # 补全URL
             full_url = urljoin(self.url, href)
+            if urlsplit(full_url).scheme.lower() not in ('http', 'https'):
+                continue
             
             if full_url in seen_urls:
                 continue
@@ -195,7 +192,7 @@ class SeleniumCrawler:
             bids.append(BidInfo(
                 title=text,
                 url=full_url,
-                publish_date=today,
+                publish_date="",
                 source=self.name
             ))
         
@@ -253,8 +250,6 @@ class SharedBrowserManager:
             options.add_argument('--disable-gpu')
             options.add_argument('--window-size=1920,1080')
             options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-            options.add_argument('--ignore-certificate-errors')
-            options.add_argument('--ignore-ssl-errors')
             # 限制内存使用
             options.add_argument('--memory-pressure-off')
             options.add_argument('--disable-background-networking')

@@ -27,9 +27,9 @@ class KeywordMatcher:
             exclude_keywords: 排除关键字列表（匹配任一则排除）
             must_contain_keywords: 必须包含关键字列表（AND关系，必须匹配至少一个）
         """
-        self.include_keywords = [kw.lower() for kw in include_keywords]
-        self.exclude_keywords = [kw.lower() for kw in (exclude_keywords or [])]
-        self.must_contain_keywords = [kw.lower() for kw in (must_contain_keywords or [])]
+        self.include_keywords = [kw.strip().lower() for kw in include_keywords if kw.strip()]
+        self.exclude_keywords = [kw.strip().lower() for kw in (exclude_keywords or []) if kw.strip()]
+        self.must_contain_keywords = [kw.strip().lower() for kw in (must_contain_keywords or []) if kw.strip()]
     
     def match(self, text: str) -> MatchResult:
         """
@@ -77,6 +77,9 @@ class KeywordMatcher:
             if kw in text_lower:
                 matched_keywords.append(kw)
         
+        if not matched_keywords:
+            return MatchResult(matched=False, matched_keywords=[])
+
         # 也把匹配到的must_contain关键字加入
         for kw in self.must_contain_keywords:
             if kw in text_lower and kw not in matched_keywords:
@@ -88,39 +91,8 @@ class KeywordMatcher:
         )
     
     def match_any(self, *texts: str) -> MatchResult:
-        """
-        检查多个文本，只要有一个匹配即可
-        
-        Args:
-            texts: 多个待匹配文本
-            
-        Returns:
-            MatchResult 对象
-        """
-        all_matched_keywords = []
-        excluded_by = None
-        
-        for text in texts:
-            result = self.match(text)
-            if result.excluded_by:
-                excluded_by = result.excluded_by
-            all_matched_keywords.extend(result.matched_keywords)
-        
-        # 去重
-        all_matched_keywords = list(set(all_matched_keywords))
-        
-        # 如果被排除，则返回不匹配
-        if excluded_by:
-            return MatchResult(
-                matched=False,
-                matched_keywords=[],
-                excluded_by=excluded_by
-            )
-        
-        return MatchResult(
-            matched=len(all_matched_keywords) > 0,
-            matched_keywords=all_matched_keywords
-        )
+        """把标题和正文作为同一公告：关注组、必须组均匹配，排除词全局生效。"""
+        return self.match("\n".join(text for text in texts if text))
 
 
 class RegexMatcher:

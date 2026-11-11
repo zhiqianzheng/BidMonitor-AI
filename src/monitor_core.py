@@ -301,7 +301,48 @@ class MonitorCore:
             'keyword_matched': [],  # 关键词匹配的项目 (title, url)
             'ai_approved': [],      # AI 判定相关的项目 (title, url, reason)
             'ai_rejected': [],      # AI 判定不相关的项目 (title, url, reason)
+            'ai_pending': [],
         }
+
+        seen = set()
+
+        def process_bid(bid):
+            if bid.unique_id in seen:
+                return False
+            seen.add(bid.unique_id)
+            if self.storage.exists(bid):
+                self.storage.remove_pending_ai(bid)
+                return False
+            result = self.matcher.match_any(bid.title, bid.content)
+            if not result.matched:
+                self.storage.remove_pending_ai(bid)
+                return False
+            ai_stats['keyword_matched'].append({'title': bid.title, 'url': bid.url})
+            if self.ai_guard:
+                relevant, reason = self.ai_guard.check_relevance(
+                    bid.title, bid.content or "", stop_event=stop_event)
+                entry = {'title': bid.title, 'url': bid.url, 'reason': reason}
+                if relevant is None:
+                    self.storage.save_pending_ai(bid, reason)
+                    ai_stats['ai_pending'].append(entry)
+                    self.log(f"[AI待复核] {bid.title[:40]}: {reason}，下轮重试")
+                    return False
+                self.storage.remove_pending_ai(bid)
+                if relevant is False:
+                    ai_stats['ai_rejected'].append(entry)
+                    return False
+                ai_stats['ai_approved'].append(entry)
+            saved = self.storage.save(bid, notified=False)
+            self.storage.remove_pending_ai(bid)
+            if saved:
+                all_matched_bids.append(bid)
+            return saved
+
+        # Retry persisted AI failures even if the source no longer lists the item.
+        for bid in self.storage.get_pending_ai():
+            if stop_event and stop_event.is_set():
+                break
+            process_bid(bid)
         
         for idx, crawler in enumerate(self.crawlers, 1):
             # 检查停止信号
@@ -339,37 +380,8 @@ class MonitorCore:
                         self.log("检测到停止信号，中断匹配")
                         break
                     
-                    result = self.matcher.match_any(bid.title, bid.content)
-                    
-                    if result.matched:
-                        # 记录关键词匹配的项目
-                        ai_stats['keyword_matched'].append({
-                            'title': bid.title,
-                            'url': bid.url
-                        })
-                        
-                        # AI 二次过滤 (如果启用)
-                        if self.ai_guard:
-                            ai_relevant, ai_reason = self.ai_guard.check_relevance(bid.title, bid.content or "")
-                            if not ai_relevant:
-                                ai_stats['ai_rejected'].append({
-                                    'title': bid.title,
-                                    'url': bid.url,
-                                    'reason': ai_reason
-                                })
-                                self.log(f"[AI过滤] 跳过: {bid.title[:30]}... (原因: {ai_reason})")
-                                continue
-                            else:
-                                ai_stats['ai_approved'].append({
-                                    'title': bid.title,
-                                    'url': bid.url,
-                                    'reason': ai_reason
-                                })
-                        
-                        if not self.storage.exists(bid):
-                            self.storage.save(bid, notified=False)
-                            all_matched_bids.append(bid)
-                            matched_count += 1
+                    if process_bid(bid):
+                        matched_count += 1
                 
                 self.log(f"[OK] {crawler.name}: Found {len(bids)} items, {matched_count} new matches")
                 
@@ -378,10 +390,11 @@ class MonitorCore:
                 self.log(f"[ERROR] {crawler.name}: {e}")
         
         # 发送通知
-        if all_matched_bids:
-            self.log(f"Sending notifications for {len(all_matched_bids)} new items...")
-            self._send_notifications(all_matched_bids)
-        else:
+        if not (stop_event and stop_event.is_set()) and self.notify_method:
+            pending = self.storage.get_unnotified()
+            if pending:
+                self._send_notifications(pending, stop_event=stop_event)
+        if not all_matched_bids:
             self.log("No new matching items found")
         
         # 报告失败的网站
@@ -438,35 +451,41 @@ class MonitorCore:
             'ai_stats': ai_stats
         }
     
-    def _send_notifications(self, bids: List[BidInfo]):
-        """发送通知"""
-        success = False
-        
+    def _send_notifications(self, bids: List[BidInfo], stop_event=None):
+        """只确认每个已配置渠道均成功的记录；成功渠道在后续重试中跳过。"""
+        import hashlib
+        targets = []
         if self.notify_method in ('email', 'both') and self.email_notifier:
+            address = self.email or self.email_notifier.receiver
+            if address:
+                targets.append(('email', address, self.email_notifier))
+        if self.notify_method in ('sms', 'both') and self.sms_notifier and self.phone:
+            targets.append(('sms', self.phone, self.sms_notifier))
+        if not targets:
+            return
+        complete = {bid.unique_id for bid in bids}
+        for channel, address, notifier in targets:
+            if stop_event and stop_event.is_set():
+                return
+            recipient = hashlib.sha256(address.strip().encode()).hexdigest()
+            delivered = self.storage.delivered_ids(channel, recipient)
+            pending = [bid for bid in bids if bid.unique_id not in delivered]
+            if not pending:
+                continue
+            success = False
             try:
-                if self.email:
-                    # 临时修改收件人
-                    original_receiver = self.email_notifier.receiver
-                    self.email_notifier.receiver = self.email
-                    success = self.email_notifier.send(bids)
-                    self.email_notifier.receiver = original_receiver
+                if channel == 'email':
+                    previous = notifier.receiver
+                    try:
+                        notifier.receiver = address
+                        success = bool(notifier.send(pending))
+                    finally:
+                        notifier.receiver = previous
                 else:
-                    success = self.email_notifier.send(bids)
-                
-                if success:
-                    self.log(f"[OK] Email sent to {self.email or self.email_notifier.receiver}")
-            except Exception as e:
-                self.log(f"[ERROR] Email failed: {e}")
-        
-        if self.notify_method in ('sms', 'both') and self.sms_notifier:
-            try:
-                if self.phone:
-                    success = self.sms_notifier.send(self.phone, bids)
-                    if success:
-                        self.log(f"[OK] SMS sent to {self.phone}")
-            except Exception as e:
-                self.log(f"[ERROR] SMS failed: {e}")
-        
-        if success:
-            for bid in bids:
-                self.storage.mark_notified(bid)
+                    success = bool(notifier.send(address, pending))
+            except Exception:
+                self.log(f"[ERROR] {channel} 通知失败，保留待重试")
+            self.storage.record_delivery(pending, channel, recipient, success)
+            if not success:
+                complete.difference_update(bid.unique_id for bid in pending)
+        self.storage.mark_notified([bid.url for bid in bids if bid.unique_id in complete])

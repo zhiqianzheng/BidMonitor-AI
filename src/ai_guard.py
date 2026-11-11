@@ -24,16 +24,18 @@ class AIGuard:
         self.enabled = config.get('enable', False)
         self.custom_prompt = config.get('prompt', '')
 
-    def check_relevance(self, title, content="", raise_on_error=False):
+    def check_relevance(self, title, content="", raise_on_error=False, stop_event=None):
         """
-        检查项目是否与无人机巡检相关
-        返回: (is_relevant: bool, reason: str)
+        检查项目是否与原版默认的无人机巡检业务或用户自定义规则相关
+        返回: (is_relevant: bool | None, reason: str)，None 表示待复核。
         """
         if not self.enabled:
             return True, "AI未启用"
 
         if not self.api_key:
-            return True, "AI未配置Key"
+            if raise_on_error:
+                raise ValueError("AI未配置Key")
+            return None, "待复核：AI未配置Key"
 
         self.log(f"🤖 [AI分析] 开始分析: {title[:40]}...")
 
@@ -110,9 +112,11 @@ class AIGuard:
             retry_delay = 2  # 秒
             
             for attempt in range(max_retries):
+                if stop_event and stop_event.is_set():
+                    return None, "待复核：任务已停止"
                 try:
                     self.log(f"⏳ [AI分析] 正在等待AI响应...")
-                    resp = requests.post(url, headers=headers, json=payload, timeout=120)
+                    resp = requests.post(url, headers=headers, json=payload, timeout=(10, 45))
                     
                     if resp.status_code != 200:
                         error_detail = resp.text[:200]
@@ -120,7 +124,13 @@ class AIGuard:
                         raise Exception(f"HTTP {resp.status_code}: {error_detail}")
                     
                     result = resp.json()
-                    ai_content = result['choices'][0]['message']['content']
+                    if 'choices' in result:
+                        ai_content = result['choices'][0]['message']['content']
+                    else:
+                        ai_content = ''.join(
+                            block.get('text', '') for block in result.get('content', [])
+                            if block.get('type') == 'text'
+                        )
                     
                     self.log(f"✅ [AI分析] 收到AI响应")
                     
@@ -139,8 +149,12 @@ class AIGuard:
                             json_str = ai_content
                             
                         analysis = json.loads(json_str)
-                        is_relevant = analysis.get('relevant', False)
+                        if not isinstance(analysis, dict) or type(analysis.get('relevant')) is not bool:
+                            raise ValueError("AI结果中的 relevant 必须是 JSON 布尔值")
+                        is_relevant = analysis['relevant']
                         reason = analysis.get('reason', 'AI未提供理由')
+                        if not isinstance(reason, str):
+                            raise ValueError("AI结果中的 reason 必须是字符串")
                         
                         if is_relevant:
                             self.log(f"✅ [AI判定] 相关 - {reason}")
@@ -149,30 +163,36 @@ class AIGuard:
                             
                         return is_relevant, reason
                         
-                    except json.JSONDecodeError:
-                        # 如果无法解析JSON，尝试从文本判断
-                        self.log(f"⚠️ [AI分析] 返回非标准JSON，尝试文本分析")
-                        is_relevant = "true" in ai_content.lower() or "相关" in ai_content or "是" in ai_content[:20]
-                        return is_relevant, ai_content[:80]
+                    except (ValueError, TypeError):
+                        if raise_on_error:
+                            raise
+                        self.log("⚠️ [AI分析] 返回格式无效，保留为待复核")
+                        return None, "待复核：AI返回格式无效"
                         
                 except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
                     # 网络连接错误或超时，可以重试
                     if attempt < max_retries - 1:
                         self.log(f"⚠️ [AI分析] 网络异常，{retry_delay}秒后重试 ({attempt + 1}/{max_retries})")
-                        time.sleep(retry_delay)
+                        if stop_event:
+                            if stop_event.wait(retry_delay):
+                                return None, "待复核：任务已停止"
+                        else:
+                            time.sleep(retry_delay)
                     else:
                         self.log(f"❌ [AI分析] 网络异常，已重试{max_retries}次仍失败")
                         if raise_on_error:
                             raise
-                        return True, f"AI网络异常（已重试{max_retries}次）"
+                        return None, f"待复核：AI网络异常（已重试{max_retries}次）"
 
         except ImportError:
             self.log(f"❌ [AI分析] 缺少requests库")
-            return True, "请安装 requests 库: pip install requests"
+            if raise_on_error:
+                raise
+            return None, "待复核：缺少 requests 库"
         except Exception as e:
             error_msg = str(e)
             self.log(f"❌ [AI分析] 请求失败: {error_msg[:100]}")
             self.logger.error(f"AI请求失败: {error_msg}")
             if raise_on_error:
                 raise
-            return True, f"AI请求异常: {error_msg[:50]}"
+            return None, f"待复核：AI请求异常: {error_msg[:50]}"

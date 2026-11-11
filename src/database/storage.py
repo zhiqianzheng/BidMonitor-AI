@@ -9,9 +9,11 @@ import sqlite3
 import hashlib
 import os
 import threading
+import json
 from datetime import datetime
 from typing import List, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
+from contextlib import closing
 
 
 @dataclass
@@ -50,7 +52,7 @@ class Storage:
     def _get_connection(self) -> sqlite3.Connection:
         """获取当前线程的数据库连接（复用机制）"""
         if not hasattr(self._local, 'conn') or self._local.conn is None:
-            self._local.conn = sqlite3.connect(self.db_path, check_same_thread=False)
+            self._local.conn = sqlite3.connect(self.db_path, timeout=30)
         return self._local.conn
     
     def close(self):
@@ -64,7 +66,8 @@ class Storage:
     
     def _init_db(self):
         """初始化数据库表"""
-        with sqlite3.connect(self.db_path) as conn:
+        with closing(sqlite3.connect(self.db_path, timeout=30)) as conn:
+            conn.execute("PRAGMA journal_mode=WAL")
             cursor = conn.cursor()
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS bids (
@@ -86,6 +89,28 @@ class Storage:
             cursor.execute("""
                 CREATE INDEX IF NOT EXISTS idx_notified ON bids(notified)
             """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_created_at ON bids(created_at)
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS deliveries (
+                    bid_id TEXT NOT NULL,
+                    channel TEXT NOT NULL,
+                    recipient TEXT NOT NULL,
+                    success INTEGER NOT NULL DEFAULT 0,
+                    attempts INTEGER NOT NULL DEFAULT 0,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (bid_id, channel, recipient)
+                )
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS ai_pending (
+                    unique_id TEXT PRIMARY KEY,
+                    bid_json TEXT NOT NULL,
+                    reason TEXT NOT NULL,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
             conn.commit()
     
     def exists(self, bid: BidInfo) -> bool:
@@ -100,13 +125,10 @@ class Storage:
     
     def save(self, bid: BidInfo, notified: bool = False) -> bool:
         """保存招标信息，返回是否成功（新记录为True，重复为False）"""
-        if self.exists(bid):
-            return False
-        
         conn = self._get_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO bids (unique_id, title, url, publish_date, source, content, purchaser, notified)
+            INSERT OR IGNORE INTO bids (unique_id, title, url, publish_date, source, content, purchaser, notified)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             bid.unique_id,
@@ -119,7 +141,7 @@ class Storage:
             1 if notified else 0
         ))
         conn.commit()
-        return True
+        return cursor.rowcount == 1
     
     def mark_notified(self, bids):
         """标记招标信息已发送通知
@@ -131,14 +153,14 @@ class Storage:
         cursor = conn.cursor()
         
         # 处理不同输入类型
-        if isinstance(bids, BidInfo):
+        if hasattr(bids, 'unique_id'):
             # 单个BidInfo对象
             cursor.execute(
                 "UPDATE bids SET notified = 1 WHERE unique_id = ?",
                 (bids.unique_id,)
             )
         elif isinstance(bids, list) and len(bids) > 0:
-            if isinstance(bids[0], BidInfo):
+            if hasattr(bids[0], 'unique_id'):
                 # BidInfo列表
                 for bid in bids:
                     cursor.execute(
@@ -234,4 +256,57 @@ class Storage:
         conn = self._get_connection()
         cursor = conn.cursor()
         cursor.execute("DELETE FROM bids")
+        cursor.execute("DELETE FROM deliveries")
+        cursor.execute("DELETE FROM ai_pending")
         conn.commit()
+
+    def delivered_ids(self, channel: str, recipient: str):
+        rows = self._get_connection().execute("""
+            SELECT d.bid_id FROM deliveries d JOIN bids b ON b.unique_id = d.bid_id
+            WHERE d.channel = ? AND d.recipient = ? AND d.success = 1 AND b.notified = 0
+        """, (channel, recipient))
+        return {row[0] for row in rows}
+
+    def record_delivery(self, bids, channel: str, recipient: str, success: bool):
+        conn = self._get_connection()
+        with conn:
+            conn.executemany("""
+                INSERT INTO deliveries (bid_id, channel, recipient, success, attempts)
+                VALUES (?, ?, ?, ?, 1)
+                ON CONFLICT(bid_id, channel, recipient) DO UPDATE SET
+                    success = MAX(deliveries.success, excluded.success),
+                    attempts = deliveries.attempts + 1,
+                    updated_at = CURRENT_TIMESTAMP
+            """, [(b.unique_id, channel, recipient, int(success)) for b in bids])
+
+    def save_pending_ai(self, bid: BidInfo, reason: str):
+        conn = self._get_connection()
+        with conn:
+            conn.execute("""
+                INSERT INTO ai_pending (unique_id, bid_json, reason) VALUES (?, ?, ?)
+                ON CONFLICT(unique_id) DO UPDATE SET bid_json = excluded.bid_json,
+                    reason = excluded.reason, updated_at = CURRENT_TIMESTAMP
+            """, (bid.unique_id, json.dumps(asdict(bid), ensure_ascii=False), reason))
+
+    def get_pending_ai(self):
+        return [BidInfo(**json.loads(row[0])) for row in
+                self._get_connection().execute("SELECT bid_json FROM ai_pending ORDER BY updated_at")]
+
+    def remove_pending_ai(self, bid: BidInfo):
+        conn = self._get_connection()
+        with conn:
+            conn.execute("DELETE FROM ai_pending WHERE unique_id = ?", (bid.unique_id,))
+
+    def get_page(self, limit: int = 50, offset: int = 0):
+        rows = self._get_connection().execute("""
+            SELECT title, url, publish_date, source, content, purchaser FROM bids
+            ORDER BY publish_date DESC, id DESC LIMIT ? OFFSET ?
+        """, (limit, offset))
+        return [BidInfo(*row) for row in rows]
+
+    def count_today(self):
+        return self._get_connection().execute("""
+            SELECT COUNT(*) FROM bids
+            WHERE created_at >= datetime(date('now', 'localtime'), 'utc')
+              AND created_at < datetime(date('now', 'localtime', '+1 day'), 'utc')
+        """).fetchone()[0]

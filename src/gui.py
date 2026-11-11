@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import threading
+import copy
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext, simpledialog, colorchooser, filedialog
 from datetime import datetime, timedelta
@@ -1298,7 +1299,7 @@ class MonitorGUI:
     
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("招标信息监控系统")
+        self.root.title("招标信息监控系统 · 原版修复版 1.7.1")
         self.root.geometry("720x920")
         self.root.resizable(True, True)
         
@@ -3100,24 +3101,37 @@ class MonitorGUI:
                 ))
                 self.log("✅ AI 连接测试通过")
             except Exception as e:
-                self.root.after(0, lambda: messagebox.showerror("测试失败", f"❌ 连接失败:\n{str(e)}"))
+                self.root.after(0, lambda error=str(e): messagebox.showerror("测试失败", f"❌ 连接失败:\n{error}"))
                 self.log(f"❌ AI 连接失败: {str(e)}")
                 
         import threading
         threading.Thread(target=run_test, daemon=True).start()
 
     def _validate_input(self) -> bool:
+        try:
+            interval = int(self.interval_var.get())
+            if not 1 <= interval <= 10080:
+                raise ValueError()
+        except (ValueError, TypeError):
+            messagebox.showwarning("提示", "监控间隔请输入 1～10080 之间的整数（分钟）")
+            return False
+        # 配置在启动时读取，运行中修改需停止后重新启动。
         # 检查是否至少配置了一种通知方式 (通过联系人)
         has_notification = False
         for contact in self.contacts:
             if not contact.get('enabled', True):
                 continue
             # 检查邮件
-            if self.email_enabled.get() and contact.get('email', {}).get('address'):
+            email = contact.get('email') or {}
+            address = email if isinstance(email, str) else email.get('address')
+            if self.email_enabled.get() and address:
                 has_notification = True
                 break
             # 检查短信
             if self.sms_enabled.get() and contact.get('phone'):
+                has_notification = True
+                break
+            if self.voice_enabled.get() and contact.get('phone'):
                 has_notification = True
                 break
             # 检查微信
@@ -3129,12 +3143,49 @@ class MonitorGUI:
             messagebox.showwarning("提示", "建议至少配置一个联系人的通知方式（邮箱/短信/微信）")
         return True
     
+    def _capture_run_config(self):
+        """Read Tk variables on the UI thread before starting a worker."""
+        self.run_config = copy.deepcopy({
+            'keywords': self.keywords_var.get(),
+            'exclude': self.exclude_var.get(),
+            'must_contain': self.must_contain_var.get(),
+            'interval': int(self.interval_var.get()),
+            'enabled_sites': self.enabled_sites,
+            'custom_sites': self.custom_sites,
+            'use_selenium': self.use_selenium_var.get(),
+            'ai_config': {
+                'enable': self.ai_enable_var.get(),
+                'base_url': self.ai_url_var.get().strip(),
+                'api_key': self.ai_key_var.get().strip(),
+                'model': self.ai_model_var.get().strip(),
+            },
+            'contacts': self.contacts,
+            'email_enabled': self.email_enabled.get(),
+            'sms_enabled': self.sms_enabled.get(),
+            'wechat_enabled': self.wechat_enabled.get(),
+            'voice_enabled': self.voice_enabled.get(),
+            'sms_config': self.sms_config,
+            'voice_config': self.voice_config,
+        })
+        self.log("本次使用启动时的配置；修改规则、来源或通知设置后，请停止并重新启动。")
+
+    def _finish_monitor(self):
+        self.is_running = False
+        self.once_btn.config(state=tk.NORMAL)
+        self.start_btn.config(state=tk.NORMAL)
+        self.stop_btn.config(state=tk.DISABLED)
+        if self.stop_event.is_set():
+            self.status_var.set("已停止")
+
     def _start_monitor(self):
+        if self.monitor_thread and self.monitor_thread.is_alive():
+            return
         if not self._validate_input():
             return
         self._save_config()
+        self._capture_run_config()
         self.is_running = True
-        self.stop_event.clear()
+        self.stop_event = threading.Event()
         self.start_btn.config(state=tk.DISABLED)
         self.stop_btn.config(state=tk.NORMAL)
         self.once_btn.config(state=tk.DISABLED)
@@ -3146,24 +3197,28 @@ class MonitorGUI:
     def _stop_monitor(self):
         self.is_running = False
         self.stop_event.set()
-        self.start_btn.config(state=tk.NORMAL)
+        self.start_btn.config(state=tk.DISABLED)
         self.stop_btn.config(state=tk.DISABLED)
-        self.once_btn.config(state=tk.NORMAL)
+        self.once_btn.config(state=tk.DISABLED)
         self.log("⏹️ 用户已手动停止检索/监控")
-        self.status_var.set("已停止")
+        self.status_var.set("正在停止，等待当前请求结束...")
     
     def _crawl_once(self):
+        if self.monitor_thread and self.monitor_thread.is_alive():
+            return
         if not self._validate_input():
             return
         self._save_config()
+        self._capture_run_config()
         # 清除停止标志，确保可以正常执行
-        self.stop_event.clear()
+        self.stop_event = threading.Event()
         # 禁用按钮防止重复点击
         self.once_btn.config(state=tk.DISABLED)
         self.start_btn.config(state=tk.DISABLED)
         self.stop_btn.config(state=tk.NORMAL)
         self.log("开始立即检索...")
-        threading.Thread(target=self._do_crawl_with_cleanup, daemon=True).start()
+        self.monitor_thread = threading.Thread(target=self._do_crawl_with_cleanup, daemon=True)
+        self.monitor_thread.start()
     
     def _do_crawl_with_cleanup(self):
         """执行爬取并在结束后恢复按钮状态"""
@@ -3171,19 +3226,18 @@ class MonitorGUI:
             self._do_crawl()
         finally:
             # 恢复按钮状态
-            self.root.after(0, lambda: self.once_btn.config(state=tk.NORMAL))
-            self.root.after(0, lambda: self.start_btn.config(state=tk.NORMAL))
-            self.root.after(0, lambda: self.stop_btn.config(state=tk.DISABLED))
+            self.root.after(0, self._finish_monitor)
     
     def _monitor_loop(self):
-        interval = int(self.interval_var.get() or self.DEFAULT_INTERVAL) * 60
-        while self.is_running and not self.stop_event.is_set():
-            self._do_crawl()
-            
-            # 倒计时显示
-            if self.is_running and not self.stop_event.is_set():
-                next_time = datetime.now() + timedelta(seconds=interval)
-                self._countdown_to_next(interval, next_time)
+        try:
+            while self.is_running and not self.stop_event.is_set():
+                self._do_crawl()
+                if self.is_running and not self.stop_event.is_set():
+                    interval = self.run_config['interval'] * 60
+                    next_time = datetime.now() + timedelta(seconds=interval)
+                    self._countdown_to_next(interval, next_time)
+        finally:
+            self.root.after(0, self._finish_monitor)
     
     def _countdown_to_next(self, total_seconds, next_time):
         """倒计时到下次检索"""
@@ -3201,12 +3255,18 @@ class MonitorGUI:
 
     def _clear_history(self):
         """清除历史数据"""
+        if self.monitor_thread and self.monitor_thread.is_alive():
+            messagebox.showinfo("提示", "请先停止检索，等待当前任务结束后再清空历史。")
+            return
         if messagebox.askyesno("确认", "确定要清除所有历史数据吗？\n清除后，下次检索将重新抓取所有信息并发送通知。"):
             try:
                 # 直接使用 Storage 类清除数据，避免初始化不必要的组件
                 from database.storage import Storage
                 storage = Storage()
-                storage.clear_all()
+                try:
+                    storage.clear_all()
+                finally:
+                    storage.close()
                 self.log("历史数据已清除")
                 messagebox.showinfo("成功", "历史数据已清除！\n请点击'立即检索'重新抓取。")
             except Exception as e:
@@ -3214,35 +3274,32 @@ class MonitorGUI:
                 messagebox.showerror("错误", f"清除失败: {e}")
 
     def _do_crawl(self):
+        core = None
         try:
             # 检查是否已停止
             if self.stop_event.is_set():
                 self.queue_log("检索已取消")
                 return
             
-            keywords = [kw.strip() for kw in self.keywords_var.get().split(',') if kw.strip()]
-            exclude = [kw.strip() for kw in self.exclude_var.get().split(',') if kw.strip()]
-            must_contain = [kw.strip() for kw in self.must_contain_var.get().split(',') if kw.strip()]
+            config = copy.deepcopy(self.run_config)
+            keywords = [kw.strip() for kw in config['keywords'].split(',') if kw.strip()]
+            exclude = [kw.strip() for kw in config['exclude'].split(',') if kw.strip()]
+            must_contain = [kw.strip() for kw in config['must_contain'].split(',') if kw.strip()]
             
             if not keywords:
-                keywords = [kw.strip() for kw in self.DEFAULT_KEYWORDS.split(',')]
+                keywords = [kw.strip() for kw in self.DEFAULT_KEYWORDS.split(',') if kw.strip()]
             
             # 显示正在初始化
             self.root.after(0, lambda: self.status_var.set("🔄 正在初始化爬虫..."))
             
             # 获取 Selenium 设置（在创建 MonitorCore 之前）
-            use_selenium = self.use_selenium_var.get()
+            use_selenium = config['use_selenium']
             self.queue_log(f"[配置] Selenium模式: {'✅ 启用' if use_selenium else '❌ 禁用'}")
             
             # 获取 AI 配置
             ai_config = None
-            if hasattr(self, 'ai_enable_var') and self.ai_enable_var.get():
-                ai_config = {
-                    'enable': True,
-                    'base_url': self.ai_url_var.get().strip(),
-                    'api_key': self.ai_key_var.get().strip(),
-                    'model': self.ai_model_var.get().strip(),
-                }
+            if config['ai_config']['enable']:
+                ai_config = config['ai_config']
                 self.queue_log(f"[配置] AI智能过滤: ✅ 启用")
             
             core = MonitorCore(
@@ -3259,9 +3316,9 @@ class MonitorGUI:
             # 重要：在 _init_crawlers 之前设置好配置
             if 'crawler' not in core.config:
                 core.config['crawler'] = {}
-            core.config['crawler']['enabled_sites'] = self.enabled_sites
+            core.config['crawler']['enabled_sites'] = config['enabled_sites']
             core.config['crawler']['use_selenium'] = use_selenium  # 使用已获取的值
-            core.config['custom_sites'] = self.custom_sites
+            core.config['custom_sites'] = config['custom_sites']
             
             # 重新初始化爬虫（使用新配置）
             self.queue_log(f"[初始化] 正在加载爬虫，Selenium模式={'启用' if use_selenium else '禁用'}...")
@@ -3296,42 +3353,11 @@ class MonitorGUI:
             new_count = result.get('new_count', 0)
             
             if was_stopped:
-                if new_count > 0:
-                    self.queue_log(f"检索已停止，发现 {new_count} 条新信息，正在发送通知...")
-                else:
-                    self.queue_log("检索已停止，没有发现新信息")
-                    self.root.after(0, lambda: self.status_var.set("已停止 - 无新信息"))
-                    return  # 没有新数据，直接返回
+                self.queue_log(f"检索已停止，已保存 {new_count} 条新信息，待下次运行通知")
+                return
             
-            # 获取未通知的标讯
-            unnotified_bids = core.storage.get_unnotified()
-            
-            if unnotified_bids:
-                # 遍历所有启用的联系人发送通知（即使停止也发送）
-                for contact in self.contacts:
-                    if not contact.get('enabled', True):
-                        continue
-                    
-                    name = contact.get('name', '未知')
-                    
-                    # 1. 发送邮件 - 使用联系人自己的邮箱配置
-                    if self.email_enabled.get() and contact.get('email'):
-                        self._send_email_to_contact(contact, unnotified_bids)
-                    
-                    # 2. 发送短信 - 检查是否配置了API
-                    if self.sms_enabled.get() and contact.get('phone') and self.sms_config.get('access_key_id'):
-                        self._send_sms_to_contact(contact, unnotified_bids)
-                    
-                    # 3. 发送微信
-                    if self.wechat_enabled.get() and contact.get('wechat_token'):
-                        self._send_wechat_to_contact(contact, unnotified_bids)
-                    
-                    # 4. 发送语音电话
-                    if self.voice_enabled.get() and contact.get('phone') and self.voice_config.get('tts_code'):
-                        self._send_voice_to_contact(contact, unnotified_bids)
-                    
-                # 5. 标记为已通知
-                core.storage.mark_notified([b.url for b in unnotified_bids])
+            from notifier.service import NotificationService
+            NotificationService(core.storage, self.queue_log).send_pending(config, self.stop_event)
             
             self.queue_log(f"检索完成，发现 {new_count} 条新信息")
             self.root.after(0, lambda: self.status_var.set(
@@ -3340,6 +3366,9 @@ class MonitorGUI:
             
         except Exception as e:
             self.queue_log(f"检索出错: {e}")
+        finally:
+            if core:
+                core.storage.close()
     
     def _send_to_all_emails(self, bids):
         if not bids:
