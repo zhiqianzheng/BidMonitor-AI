@@ -1299,7 +1299,7 @@ class MonitorGUI:
     
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("招标信息监控系统 · 原版修复版 1.7.1")
+        self.root.title("招标信息监控系统 · 原版修复版 1.7.2")
         self.root.geometry("720x920")
         self.root.resizable(True, True)
         
@@ -2562,6 +2562,9 @@ class MonitorGUI:
         self.root.config(menu=self.menubar)
         
         # 直接添加三个独立的菜单项
+        from .desktop_tools import show_history, show_rules
+        self.menubar.add_command(label="历史结果", command=lambda: show_history(self))
+        self.menubar.add_command(label="规则预览", command=lambda: show_rules(self))
         self.menubar.add_command(label="帮助", command=self._show_help)
         self.menubar.add_command(label="关于", command=self._show_about_dialog)
         self.menubar.add_command(label="检查更新", command=self._check_update)
@@ -3282,9 +3285,9 @@ class MonitorGUI:
                 return
             
             config = copy.deepcopy(self.run_config)
-            keywords = [kw.strip() for kw in config['keywords'].split(',') if kw.strip()]
-            exclude = [kw.strip() for kw in config['exclude'].split(',') if kw.strip()]
-            must_contain = [kw.strip() for kw in config['must_contain'].split(',') if kw.strip()]
+            keywords = [kw.strip() for kw in config['keywords'].replace('，', ',').split(',') if kw.strip()]
+            exclude = [kw.strip() for kw in config['exclude'].replace('，', ',').split(',') if kw.strip()]
+            must_contain = [kw.strip() for kw in config['must_contain'].replace('，', ',').split(',') if kw.strip()]
             
             if not keywords:
                 keywords = [kw.strip() for kw in self.DEFAULT_KEYWORDS.split(',') if kw.strip()]
