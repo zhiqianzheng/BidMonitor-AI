@@ -66,7 +66,7 @@ class BaseCrawler(ABC):
             "Sec-Ch-Ua-Platform": '"Windows"',
         }
     
-    def fetch(self, url: str, params: Optional[Dict] = None) -> Optional[str]:
+    def fetch(self, url: str, params: Optional[Dict] = None, stop_event=None) -> Optional[str]:
         """
         发起 HTTP 请求获取页面内容
         
@@ -77,10 +77,9 @@ class BaseCrawler(ABC):
         Returns:
             页面HTML内容，失败返回None
         """
-        import urllib3
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        
         for attempt in range(self.max_retries):
+            if stop_event and stop_event.is_set():
+                return None
             try:
                 self.logger.debug(f"正在请求: {url} (尝试 {attempt + 1}/{self.max_retries})")
                 
@@ -89,7 +88,7 @@ class BaseCrawler(ABC):
                     params=params,
                     headers=self._get_headers(),
                     timeout=self.timeout,
-                    verify=False,  # 跳过SSL证书验证
+                    verify=True,
                     allow_redirects=True
                 )
                 response.raise_for_status()
@@ -100,7 +99,11 @@ class BaseCrawler(ABC):
                 # 添加请求延迟
                 delay = self.request_delay + random.uniform(0, 2)
                 self.logger.debug(f"请求成功，等待 {delay:.1f} 秒")
-                time.sleep(delay)
+                if stop_event:
+                    if stop_event.wait(delay):
+                        return None
+                else:
+                    time.sleep(delay)
                 
                 return response.text
                 
@@ -111,7 +114,7 @@ class BaseCrawler(ABC):
             except requests.exceptions.ConnectionError as e:
                 self.logger.warning(f"连接失败: {url}, 可能网站不可访问或需要VPN")
             except requests.exceptions.HTTPError as e:
-                status_code = e.response.status_code if e.response else 'N/A'
+                status_code = e.response.status_code if e.response is not None else 'N/A'
                 self.logger.warning(f"HTTP错误 {status_code}: {url}")
                 if status_code in [401, 403]:
                     self.logger.info(f"该网站可能需要登录或被屏蔽了爬虫")
@@ -123,7 +126,11 @@ class BaseCrawler(ABC):
                 # 指数退避: 2, 4, 8... 秒，加上随机抖动
                 wait_time = (2 ** (attempt + 1)) + random.uniform(0, 1)
                 self.logger.info(f"⏳ 等待 {wait_time:.1f} 秒后第 {attempt + 2} 次重试...")
-                time.sleep(wait_time)
+                if stop_event:
+                    if stop_event.wait(wait_time):
+                        return None
+                else:
+                    time.sleep(wait_time)
         
         self.logger.error(f"请求最终失败: {url}")
         return None
@@ -177,7 +184,7 @@ class BaseCrawler(ABC):
                 self.logger.info(f"[{self.name}] Crawl interrupted by stop signal")
                 break
             
-            html = self.fetch(url)
+            html = self.fetch(url, stop_event=stop_event)
             if html:
                 # 检查是否被反爬虫拦截
                 if self._is_blocked(html):

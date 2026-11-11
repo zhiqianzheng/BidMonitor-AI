@@ -51,12 +51,14 @@ def get_all_crawlers():
     """获取所有爬虫类"""
     return {
         'chinabidding': ChinaBiddingCrawler,
+        'ccgp': CCGPCrawler,
     }
 
 # 默认内置网站配置 (用于通用爬虫)
 def get_default_sites():
     """获取默认的内置网站列表"""
     return {
+        'ccgp': {'name': '中国政府采购网', 'url': 'https://www.ccgp.gov.cn/cggg/dfgg/index.htm'},
         'chinabidding': {'name': '中国采购与招标网', 'url': 'http://www.chinabidding.cn/'},
         'dlzb': {'name': '中国电力招标网', 'url': 'http://www.dlzb.com/'},
         'chinabiddingcc': {'name': '中国采购招标网', 'url': 'http://www.chinabidding.cc/'},
@@ -143,7 +145,7 @@ class MonitorCore:
         
         # 初始化组件
         self.storage = Storage()
-        self.matcher = KeywordMatcher(keywords, exclude_keywords, must_contain_keywords)
+        self.matcher = KeywordMatcher(keywords, exclude_keywords, must_contain_keywords, match_all=not keywords)
         
         # 加载配置文件
         self.config = self._load_config()
@@ -301,7 +303,53 @@ class MonitorCore:
             'keyword_matched': [],  # 关键词匹配的项目 (title, url)
             'ai_approved': [],      # AI 判定相关的项目 (title, url, reason)
             'ai_rejected': [],      # AI 判定不相关的项目 (title, url, reason)
+            'ai_pending': [],
         }
+
+        seen = set()
+
+        def process_bid(bid):
+            if bid.unique_id in seen:
+                return False
+            seen.add(bid.unique_id)
+            from database.workbench import is_notice
+            if is_notice(bid.title):
+                self.storage.workbench.archive_bid(bid)
+            elif not self.keywords:
+                return False
+            if self.storage.exists(bid):
+                self.storage.remove_pending_ai(bid)
+                return False
+            result = self.matcher.match_any(bid.title, bid.content)
+            if not result.matched:
+                self.storage.remove_pending_ai(bid)
+                return False
+            ai_stats['keyword_matched'].append({'title': bid.title, 'url': bid.url})
+            if self.ai_guard:
+                relevant, reason = self.ai_guard.check_relevance(
+                    bid.title, bid.content or "", stop_event=stop_event)
+                entry = {'title': bid.title, 'url': bid.url, 'reason': reason}
+                if relevant is None:
+                    self.storage.save_pending_ai(bid, reason)
+                    ai_stats['ai_pending'].append(entry)
+                    self.log(f"[AI待复核] {bid.title[:40]}: {reason}，下轮重试")
+                    return False
+                self.storage.remove_pending_ai(bid)
+                if relevant is False:
+                    ai_stats['ai_rejected'].append(entry)
+                    return False
+                ai_stats['ai_approved'].append(entry)
+            saved = self.storage.save(bid, notified=False)
+            self.storage.remove_pending_ai(bid)
+            if saved:
+                all_matched_bids.append(bid)
+            return saved
+
+        # Retry persisted AI failures even if the source no longer lists the item.
+        for bid in self.storage.get_pending_ai():
+            if stop_event and stop_event.is_set():
+                break
+            process_bid(bid)
         
         for idx, crawler in enumerate(self.crawlers, 1):
             # 检查停止信号
@@ -339,37 +387,8 @@ class MonitorCore:
                         self.log("检测到停止信号，中断匹配")
                         break
                     
-                    result = self.matcher.match_any(bid.title, bid.content)
-                    
-                    if result.matched:
-                        # 记录关键词匹配的项目
-                        ai_stats['keyword_matched'].append({
-                            'title': bid.title,
-                            'url': bid.url
-                        })
-                        
-                        # AI 二次过滤 (如果启用)
-                        if self.ai_guard:
-                            ai_relevant, ai_reason = self.ai_guard.check_relevance(bid.title, bid.content or "")
-                            if not ai_relevant:
-                                ai_stats['ai_rejected'].append({
-                                    'title': bid.title,
-                                    'url': bid.url,
-                                    'reason': ai_reason
-                                })
-                                self.log(f"[AI过滤] 跳过: {bid.title[:30]}... (原因: {ai_reason})")
-                                continue
-                            else:
-                                ai_stats['ai_approved'].append({
-                                    'title': bid.title,
-                                    'url': bid.url,
-                                    'reason': ai_reason
-                                })
-                        
-                        if not self.storage.exists(bid):
-                            self.storage.save(bid, notified=False)
-                            all_matched_bids.append(bid)
-                            matched_count += 1
+                    if process_bid(bid):
+                        matched_count += 1
                 
                 self.log(f"[OK] {crawler.name}: Found {len(bids)} items, {matched_count} new matches")
                 

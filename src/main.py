@@ -1,5 +1,5 @@
 """
-无人机招投标监控系统 - 主程序入口
+全行业招投标监控系统 - 主程序入口
 """
 import os
 import sys
@@ -67,7 +67,8 @@ class BidMonitor:
         self.storage = Storage()
         self.matcher = KeywordMatcher(
             include_keywords=config['keywords']['include'],
-            exclude_keywords=config['keywords'].get('exclude', [])
+            exclude_keywords=config['keywords'].get('exclude', []),
+            match_all=not config['keywords']['include']
         )
         self.notifier = EmailNotifier(config['email'])
         
@@ -101,6 +102,11 @@ class BidMonitor:
                 
                 # 匹配关键字
                 for bid in bids:
+                    from database.workbench import is_notice
+                    if is_notice(bid.title):
+                        self.storage.workbench.archive_bid(bid)
+                    elif not self.config['keywords']['include']:
+                        continue
                     match_result = self.matcher.match_any(bid.title, bid.content)
                     
                     if match_result.matched:
@@ -172,7 +178,7 @@ def main():
     logger = logging.getLogger("main")
     
     logger.info("=" * 60)
-    logger.info("  无人机招投标监控系统 启动")
+    logger.info("  全行业招投标监控系统 启动")
     logger.info("=" * 60)
     
     # 创建监控器

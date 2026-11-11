@@ -15,11 +15,11 @@ class DlnyzbCrawler(BaseCrawler):
     
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
-        self.search_keywords = config.get('search_keywords', ['光伏', '风电', '无人机'])
+        self.search_keywords = config.get('search_keywords', [])
     
     def get_list_urls(self) -> List[str]:
         urls = []
-        for keyword in self.search_keywords:
+        for keyword in (self.search_keywords or ['']):
             url = f"http://www.dlnyzb.com/search?keyword={keyword}"
             urls.append(url)
         return urls

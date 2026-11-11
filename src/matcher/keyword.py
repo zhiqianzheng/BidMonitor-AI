@@ -18,7 +18,7 @@ class KeywordMatcher:
     """关键字匹配器"""
     
     def __init__(self, include_keywords: List[str], exclude_keywords: Optional[List[str]] = None,
-                 must_contain_keywords: Optional[List[str]] = None):
+                 must_contain_keywords: Optional[List[str]] = None, match_all: bool = False):
         """
         初始化匹配器
         
@@ -27,9 +27,10 @@ class KeywordMatcher:
             exclude_keywords: 排除关键字列表（匹配任一则排除）
             must_contain_keywords: 必须包含关键字列表（AND关系，必须匹配至少一个）
         """
-        self.include_keywords = [kw.lower() for kw in include_keywords]
-        self.exclude_keywords = [kw.lower() for kw in (exclude_keywords or [])]
-        self.must_contain_keywords = [kw.lower() for kw in (must_contain_keywords or [])]
+        self.include_keywords = [kw.strip().lower() for kw in include_keywords if kw.strip()]
+        self.exclude_keywords = [kw.strip().lower() for kw in (exclude_keywords or []) if kw.strip()]
+        self.must_contain_keywords = [kw.strip().lower() for kw in (must_contain_keywords or []) if kw.strip()]
+        self.match_all = match_all
     
     def match(self, text: str) -> MatchResult:
         """
@@ -76,6 +77,9 @@ class KeywordMatcher:
         for kw in self.include_keywords:
             if kw in text_lower:
                 matched_keywords.append(kw)
+
+        if not matched_keywords and not (self.match_all and not self.include_keywords):
+            return MatchResult(matched=False, matched_keywords=[])
         
         # 也把匹配到的must_contain关键字加入
         for kw in self.must_contain_keywords:
@@ -83,7 +87,7 @@ class KeywordMatcher:
                 matched_keywords.append(kw)
         
         return MatchResult(
-            matched=len(matched_keywords) > 0,
+            matched=bool(matched_keywords) or (self.match_all and not self.include_keywords),
             matched_keywords=matched_keywords
         )
     
@@ -99,9 +103,11 @@ class KeywordMatcher:
         """
         all_matched_keywords = []
         excluded_by = None
+        matched = False
         
         for text in texts:
             result = self.match(text)
+            matched = matched or result.matched
             if result.excluded_by:
                 excluded_by = result.excluded_by
             all_matched_keywords.extend(result.matched_keywords)
@@ -118,7 +124,7 @@ class KeywordMatcher:
             )
         
         return MatchResult(
-            matched=len(all_matched_keywords) > 0,
+            matched=matched,
             matched_keywords=all_matched_keywords
         )
 
