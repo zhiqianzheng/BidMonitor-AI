@@ -54,6 +54,12 @@ if [ -d "src" ]; then
     echo "  已备份旧的 src 目录"
 fi
 
+# 备份重组后的应用源码，避免解压后遗留已移除的旧模块
+if [ -d "apps" ]; then
+    mv apps apps.bak.$(date +%Y%m%d_%H%M%S)
+    echo "  已备份旧的 apps 目录"
+fi
+
 # 解压
 unzip -o "$ZIP_FILE"
 echo -e "${GREEN}  解压完成${NC}"

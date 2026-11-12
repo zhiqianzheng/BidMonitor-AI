@@ -50,3 +50,6 @@ verify_*.py
 # Excel等资料文件
 *.xlsx
 *.xls
+
+# Per-application private configuration, databases and logs
+runtime/

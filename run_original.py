@@ -1,14 +1,16 @@
-"""Start the maintained desktop edition with its own modules and data directory."""
+"""Compatibility command for the maintained desktop application."""
+import importlib.util
 from pathlib import Path
-import runpy
 import sys
 
+_package = Path(__file__).resolve().parents[0] / "apps"
+if "apps" not in sys.modules:
+    _spec = importlib.util.spec_from_file_location("apps", _package / "__init__.py", submodule_search_locations=[str(_package)])
+    _apps = importlib.util.module_from_spec(_spec)
+    sys.modules["apps"] = _apps
+    _spec.loader.exec_module(_apps)
 
-def main():
-    desktop = Path(__file__).resolve().parent / "original_desktop"
-    sys.path.insert(0, str(desktop))
-    runpy.run_path(str(desktop / "run.py"), run_name="__main__")
-
+from apps.desktop.bidmonitor_desktop.launcher import main
 
 if __name__ == "__main__":
     main()
