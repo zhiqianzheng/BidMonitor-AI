@@ -99,4 +99,4 @@ git clone --branch v1.7-original https://github.com/zhiqianzheng/BidMonitor-AI.g
 
 ## 许可证
 
-采用 [MIT License](LICENSE)。欢迎通过 Issue 报告具体页面、操作步骤与脱敏日志，通过 Pull Request 提交修复。
+采用 [MIT License](https://opensource.org/license/mit/)。欢迎通过 Issue 报告具体页面、操作步骤与脱敏日志，通过 Pull Request 提交修复。
