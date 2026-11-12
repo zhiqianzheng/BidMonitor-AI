@@ -1,104 +1,117 @@
-# BidMonitor AI · 招标监控与销售线索工作台
+# BidMonitor AI · 应用与代码导航
 
-`main` 同时包含团队工作台与原版桌面修复版 1.7.6。两版使用不同的源码和运行目录，配置与数据库互相独立。
+`main` 中按应用维护代码。**找桌面版进入 `apps/desktop/`；找团队工作台进入 `apps/workbench/`。** 原始归档通过 Git 标签保留，不以版本号目录重复堆放源码。
 
-| 版本 | 获取位置 | 适用场景 | 启动入口 |
+| 应用 | 状态 | 唯一业务代码位置 | 启动命令 |
 | --- | --- | --- | --- |
-| 团队工作台 | [`main`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/main) | 全行业项目搜索、项目详情、团队线索跟进 | `python run_workbench.py` |
-| 原版桌面修复版 1.7.6 | [`main/original_desktop`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/main/original_desktop) | Windows 桌面关键词监控、AI 二次筛选、多渠道通知 | `python run_original.py` 或 `python run.py` |
-| 原始归档版 1.7 | [`v1.7-original`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/v1.7-original) 标签 | 查看、下载和运行未经本轮维护修改的历史版本 | `python run.py` |
+| 原版桌面修复版 1.7.6 | 维护中 | [`apps/desktop/bidmonitor_desktop`](apps/desktop/bidmonitor_desktop) | `python run_original.py` |
+| 团队工作台 2.0 维护线 | 维护中 | [`apps/workbench/bidmonitor_workbench`](apps/workbench/bidmonitor_workbench) | `python run_workbench.py` |
+| 历史 Web 后台 | 兼容保留 | [`apps/legacy_web/bidmonitor_legacy_web`](apps/legacy_web/bidmonitor_legacy_web) | 旧入口 `server/app.py`，默认 8080 |
+| 未经维护的原始 1.7 | 只读归档 | [`v1.7-original`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/v1.7-original) 标签 | 单独克隆归档标签运行 |
 
-原版维护源码位于 `original_desktop/src/`，工作台仍使用根目录的 `src/` 和 `server/`。根目录 `run.py` 已转到 1.7.6 桌面维护版，工作台继续使用 `run_workbench.py`。
+## 目录说明
 
-[`maintenance/original-v1.7`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/maintenance/original-v1.7) 继续保留独立原版维护线，归档标签也保留。以后维护分支的更新需要通过 PR 同步到 `main/original_desktop/`；两个分支不会自动同步。
+```text
+apps/
+  desktop/bidmonitor_desktop/
+    gui.py                    桌面界面
+    monitor_core.py           桌面监控调度与处理
+    ai_api.py、ai_guard.py     模型发现、调用检测、AI筛选
+    crawler/                  桌面来源适配
+    storage/                  桌面SQLite数据存储
+    notifier/                 邮件、短信、微信、语音
+    paths.py                  桌面私有数据路径
+  workbench/bidmonitor_workbench/
+    api.py                    工作台HTTP接口
+    collectors/               全国与省级来源采集
+    storage/                  项目、线索、分类、截止状态
+    web/                      工作台页面与静态资源
+    paths.py                  工作台私有数据路径
+  legacy_web/bidmonitor_legacy_web/
+    app.py                    历史Web接口
+    core/                     历史后台所需的冻结实现
+    web/                      历史页面
+run.py、run_original.py        桌面兼容启动命令
+run_workbench.py              工作台兼容启动命令
+original_desktop/run.py        更早的桌面兼容命令
+server/                       历史部署资料、依赖清单和薄兼容入口
+runtime/                      新安装的配置、数据库、日志；运行时生成，不提交
+```
 
-## 团队工作台
+原先混在根 `src/`、`server/` 里的业务实现已按归属迁入上述应用目录。`server/app.py` 和 `server/workbench_app.py` 仅保留兼容导出，修改功能时应进入实际应用包。`original_desktop/` 不再保存另一套桌面业务源码。
 
-工作台面向团队自用，支持：
+本轮只整理应用边界、导入、路径与入口，保留各版业务行为；没有强行合并两版的采集器。`legacy_web/core/` 是历史后台兼容实现，不能把它当作桌面维护版或工作台的修改入口。
 
-- 按关键词、行业、采购类别、地区、来源、公告类型和发布日期搜索；公告类型可多选。
-- 在已有条件上增加关键词二次筛选，各组筛选条件为“与”的关系。
-- 默认隐藏能够确定已截止或已结束的公告，也可切换查看范围。
-- 查看项目详情、原文链接、采购单位、预算和截止时间等已提取字段。
-- 将项目转为线索，维护负责人、跟进阶段、优先级、联系人和跟进记录。
-- 选择数据来源、手动采集、设置定时更新并查看来源状态。
+## 安装
 
-安装 Python 3.10 或更高版本。以下命令适用于 Windows PowerShell：
+推荐带 Tkinter 的 Python 3.10 或更高版本。Windows PowerShell：
 
 ```powershell
-git clone --branch main https://github.com/zhiqianzheng/BidMonitor-AI.git BidMonitor-Workbench
-cd BidMonitor-Workbench
+git clone https://github.com/zhiqianzheng/BidMonitor-AI.git
+cd BidMonitor-AI
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt -r server/requirements.txt
-.\.venv\Scripts\python.exe run_workbench.py
 ```
 
-浏览器访问 <http://127.0.0.1:8765>。关闭运行进程会停止服务和定时更新；软件未运行时不会自动采集。可使用 `--port 8766` 更换端口，或使用 `--no-browser` 关闭自动打开浏览器。
-
-该入口默认监听本机回环地址，适合本机使用；仓库中的本地工作台不等同于已经部署好的多人公网服务。
-
-## 原版桌面修复版 1.7.6
-
-### 已维护的功能
-
-- **历史结果列表**：分页查询，按关键词、来源、发布日期、通知状态筛选，打开原文并导出符合条件的 CSV。
-- **规则预览**：查看关键词、必须包含词、排除词的命中结果。关键词组内任意命中；必须包含词组内任意命中；两组之间同时满足，排除词命中则排除。匹配范围包括标题和已取得的正文。
-- **采集与诊断**：修复浏览器会话恢复、动态页面和部分子页面提取，浏览器依赖不可用时真正回退普通 HTTP；区分访问限制、登录页、空页面及部分采集失败；过滤已识别的导航、会员续费等无关内容。
-- **自定义来源**：支持只添加自定义网站、不启用内置来源；浏览器模式保留短标题及无固定招采词的候选，再按用户关键词匹配。自定义网站应填写公开公告列表页地址；无效配置、来源加载失败和没有可用来源时会明确提示。
-- **AI 配置**：用户填写 API URL 和 API Key，一键获取接口返回的模型列表，在下拉框选择模型，再实际调用所选模型检测可用性。兼容常见聊天接口，部分原生消息接口也受支持。
-- **运行和通知**：启动时保存本轮配置快照，避免后台线程读取界面变量；支持停止任务、失败后的待复核重试，以及按收件人记录通知结果，避免重复发送成功记录。
-
-截图中所述“只选择自定义来源就直接结束”的现象，在当前维护版中未复现。1.7.6 修复的是已确认存在的相关误报：没有加载任何采集来源时，不再显示“检索完成、0 条”，而是提示本轮未抓取网站并引导检查来源配置。
-
-### 安装和运行
-
-Windows 建议使用带 Tkinter 的 Python 3.10 或更高版本；浏览器模式需要本机安装 Google Chrome。
+只运行桌面版时可只安装根目录依赖；浏览器模式另外需要 `selenium`、`webdriver-manager` 和本机 Google Chrome。部分省级公开接口的解析需要 `cryptography`：
 
 ```powershell
-git clone --branch main https://github.com/zhiqianzheng/BidMonitor-AI.git BidMonitor-Original
-cd BidMonitor-Original
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m pip install selenium webdriver-manager
+.\.venv\Scripts\python.exe -m pip install selenium webdriver-manager cryptography
+```
+
+依赖清单本轮保留原位置；`server/requirements.txt` 中的 Web 和浏览器依赖也供工作台使用。短信、语音等服务还需安装对应 SDK 并配置自己的账号。
+
+## 启动与功能
+
+桌面维护版：
+
+```powershell
 .\.venv\Scripts\python.exe run_original.py
+# 旧命令 python run.py 和 python original_desktop/run.py 仍可使用
+# 也可使用包入口：python -m apps.desktop.bidmonitor_desktop
 ```
 
-也可以直接运行 `python original_desktop/run.py`。从根目录启动时，程序会切换到 `original_desktop/` 保存桌面版数据。浏览器驱动首次准备可能需要联网。选择普通模式可采集静态 HTML；动态页面可尝试浏览器模式。短信、语音等通知需要对应服务账号、权限及额外 SDK，按所选通知服务安装和配置。
+支持自定义网站、普通/浏览器采集、AI模型列表与实际调用检测、历史结果查询和CSV导出、规则预览及通知重试。至少启用一个有效来源；填写 AI 信息本身不会配置采集来源。模型列表不保证每个模型都有调用权限，调用检测可能消耗接口额度。
 
-### 首次使用
-
-1. 设置关注关键词、必须包含词和排除词。默认词是原版历史示例，可按自己的行业全部替换。
-2. 在“管理监控网站”中勾选内置来源，或添加自定义网站，点击“保存并关闭”。**至少配置一个有效来源**，只填写 AI 信息不会产生采集来源。
-3. 如需 AI 筛选，填写兼容接口的 URL 和 Key，获取模型，选择模型并点击“测试可用性”。模型列表表示接口列出了该模型，不保证该 Key 对所有模型都有调用权限。
-4. 按需配置联系人和通知渠道，然后点击“立即检索”或“启动监控”。没有通知渠道时仍可查询已入库结果。
-5. 使用“历史结果”和“规则预览”检查数据与匹配规则。运行中修改规则、来源或 AI 配置后，停止当前任务再重新启动才应用新配置。
-
-“测试可用性”会发送一次简短模型请求，可能消耗接口额度。配置会在开始检索、启动监控和保存网站配置等操作时写入本机文件；填写后仅测试接口并不等于已经保存全部设置。
-
-## 数据、配置和版本隔离
-
-- 同一 `main` 克隆目录可启动两版，也可分别克隆后运行；两版不得共用 SQLite 数据库。
-- 原版在 `original_desktop/` 下保存 `user_config.json`、`data/bids.db` 和 `output_log.txt`；配置可能包含 API Key、通知服务凭据和联系人信息。
-- 工作台默认使用根目录下的 `data/bids.db`；原版使用 `original_desktop/data/bids.db`。原版可选 YAML 配置只读取 `original_desktop/config/config.yaml`，不会读取工作台的配置。
-- 转发源码或发布包时，排除私人配置、数据库、日志、导出结果、浏览器资料及访问凭据。仓库不附带个人配置、采集数据库或 Windows 免安装包。
-- 更换代码版本前先单独备份本机数据。代码回退不会自动恢复数据库、配置或已经运行的程序。
-
-下载未经维护的原始版本：
+团队工作台：
 
 ```powershell
-git clone --branch v1.7-original https://github.com/zhiqianzheng/BidMonitor-AI.git BidMonitor-Original-Archive
+.\.venv\Scripts\python.exe run_workbench.py
+# 可选：--no-browser --port 8766
+# 包入口：python -m apps.workbench.bidmonitor_workbench
 ```
 
-归档版与修复版使用不同目录；不要在归档目录中直接覆盖修复版文件。
+默认访问 <http://127.0.0.1:8765>。支持全行业搜索、公告类型多选、与已有条件同时满足的关键词二次筛选、截止状态过滤、项目详情、负责人和销售线索跟进、来源状态及定时更新。服务进程停止后不会继续采集；默认入口是本机工作台，不等于已部署多人公网服务。
 
-## 覆盖范围与已知限制
+历史 Web 后台：旧 `server/start.sh`、`server/setup.sh` 和服务文件继续指向兼容入口，运行的是历史 8080 后台，**不会启动 8765 团队工作台**。`server/README.md` 和 `server/DEPLOY.md` 是这套历史服务的资料。新开发和新部署应先选择所需应用，不要混用历史后台说明。
 
-- 来源目录中的“已登记”不等于该站点当前采集成功，也不等于已经覆盖其全部栏目、分页和历史数据。部分来源仍可能无数据或仅部分采集。
-- 浏览器模式帮助读取动态页面，不能保证通过验证码、登录、会员限制或站点访问控制。遇到限制会报告原因；不会把未抓取成功当作正常空结果。
-- 自定义网站使用通用解析逻辑，不保证适配任意页面、脚本跳转或专有接口；优先提供公开公告列表页，必要时需增加专用适配。
-- 截止时间、预算、采购单位等字段取决于来源是否公开及解析结果；未知字段不应被当作已验证值，最终以来源原文为准。
-- 一次实跑成功只证明该时间、该入口和该模式的结果，不代表全网持续完整覆盖。原版 1.7.6 维护线已完成本地 99 项检查，并对仅配置自定义来源的普通模式和真实 Chrome 模式做过采集验证；Windows 免安装包需另行构建和验证。
+## 配置与数据库位置
 
-## 许可证
+程序使用明确路径，不再靠修改进程工作目录或 `sys.path` 来选择版本。不会自动移动、复制或覆盖已有私人配置、数据库。
 
-采用 [MIT License](https://opensource.org/license/mit/)。欢迎通过 Issue 报告具体页面、操作步骤与脱敏日志，通过 Pull Request 提交修复。
+| 应用 | 新安装默认目录 | 兼容原有数据 | 显式覆盖 |
+| --- | --- | --- | --- |
+| 桌面版 | `runtime/desktop/` | `original_desktop/` 下已有 JSON、YAML、数据库或日志时继续使用该目录 | `BIDMONITOR_DESKTOP_HOME` |
+| 工作台 | `runtime/workbench/` | 根目录已有 `data/bids.db` 时继续使用根目录数据 | `BIDMONITOR_WORKBENCH_HOME`；数据库路径可用 `BIDMONITOR_DB` |
+| 历史 Web | `runtime/legacy_web/` | 已有根目录数据库或 `server/server_config.json` 时保留历史路径 | `BIDMONITOR_LEGACY_HOME`、`BIDMONITOR_LEGACY_DB` |
+
+- 桌面 JSON 为所选目录的 `user_config.json`，YAML 为 `config/config.yaml`，数据库为 `data/bids.db`；不会读取工作台的父目录配置。
+- 工作台显式传入的数据库路径优先；其次是 `BIDMONITOR_DB`，再根据所选运行目录确定路径。
+- 显式运行目录环境变量优先于旧目录识别。启动程序前设置变量，不要在运行中切换路径。
+- 历史 Web 为兼容旧安装可能沿用根目录数据库；若与工作台并行使用，先为历史 Web 指定独立目录，避免两个服务写同一个旧库。迁移数据应另做备份与验证，本轮不会擅自迁移。
+- `runtime/`、私人配置、数据库和日志不提交到 Git。转发源码或发布包时，也应排除这些数据和访问凭据。
+
+桌面设置在开始检索、启动监控和保存网站配置等操作时写入本机；仅填写并测试 API 不等于已经保存全部设置。运行中修改规则或来源后，停止再启动才能应用新的本轮配置。
+
+## 版本与维护方式
+
+- `main` 是当前应用布局和日常开发基线，按应用目录修改，经独立功能分支和 PR 合入。
+- `maintenance/original-v1.7` 保留旧布局的桌面维护线；不与 main 的新包布局自动同步，需要修补时明确目标，不能只修其中一份却宣称两边已更新。
+- `v1.7-original` 和现有工作台标签保留历史状态。需要历史代码时按标签克隆，不在 main 中新增 `v1.7.6/`、`v2.0/` 等复制目录。
+- 目录重组不会更新已安装程序或免安装包。Windows包需单独构建、排除私人数据并实际启动验证。
+
+## 覆盖范围
+
+来源已登记不等于当前采集成功，也不保证覆盖全部栏目、分页和历史数据。浏览器模式可读取动态内容，不能保证处理登录、验证码或会员限制；访问失败和部分采集会报告状态。字段提取以来源公开内容为基础，未知值不代表已核实，最终以原文为准。
+
+采用 [MIT License](https://opensource.org/license/mit/)。报告问题时请注明应用名、版本/提交、入口和脱敏操作记录。

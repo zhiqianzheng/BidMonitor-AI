@@ -6,14 +6,20 @@ echo   BidMonitor 一键打包部署脚本 v1.7
 echo ========================================
 echo.
 
-cd /d %~dp0
+cd /d "%~dp0"
 
 echo [1/4] 清理旧的打包文件...
 if exist bidmonitor_deploy.zip del bidmonitor_deploy.zip
 
 echo [2/4] 创建部署包...
-:: 打包src和server目录（包含源码）
-powershell -Command "Compress-Archive -Path 'src', 'server' -DestinationPath 'bidmonitor_deploy.zip' -Force"
+:: 仅打包应用源码、兼容入口和部署依赖；不包含配置、数据库和日志
+powershell -NoProfile -Command "$ErrorActionPreference='Stop'; Add-Type -AssemblyName System.IO.Compression; Add-Type -AssemblyName System.IO.Compression.FileSystem; $packRoot=[IO.Path]::GetFullPath((Get-Location).Path); $packPath=Join-Path $packRoot 'bidmonitor_deploy.zip'; $packFiles=@(Get-ChildItem -LiteralPath (Join-Path $packRoot 'apps') -Recurse -File | Where-Object { $_.Extension -in @('.py','.html','.css','.js') -and $_.FullName.Replace('\','/') -notmatch '(^|/)(__pycache__|tests?|fixtures)(/|$)' }); $packFiles+=@(Get-ChildItem -LiteralPath (Join-Path $packRoot 'server') -File | Where-Object { $_.Extension -in @('.py','.sh','.service') -or $_.Name -eq 'requirements.txt' }); foreach ($packName in @('requirements.txt','README.md','run.py','run_original.py','run_workbench.py')) { $packEntry=Join-Path $packRoot $packName; if (Test-Path -LiteralPath $packEntry -PathType Leaf) { $packFiles+=Get-Item -LiteralPath $packEntry } }; $packZip=[IO.Compression.ZipFile]::Open($packPath,[IO.Compression.ZipArchiveMode]::Create); try { foreach ($packFile in $packFiles) { $packRelative=$packFile.FullName.Substring($packRoot.Length+1).Replace('\','/'); if ($packFile.Extension -eq '.sh') { $packShell=$packZip.CreateEntry($packRelative); $packWriter=[IO.StreamWriter]::new($packShell.Open(),[Text.UTF8Encoding]::new($false)); try { $packWriter.Write([IO.File]::ReadAllText($packFile.FullName).Replace([string][char]13,'')) } finally { $packWriter.Dispose() } } else { [IO.Compression.ZipFileExtensions]::CreateEntryFromFile($packZip,$packFile.FullName,$packRelative,[IO.Compression.CompressionLevel]::Optimal) | Out-Null } } } finally { $packZip.Dispose() }"
+
+if errorlevel 1 (
+    echo 打包失败！
+    pause
+    exit /b 1
+)
 
 if not exist bidmonitor_deploy.zip (
     echo 打包失败！

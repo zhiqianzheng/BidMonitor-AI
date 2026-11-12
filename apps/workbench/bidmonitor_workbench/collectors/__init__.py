@@ -1,0 +1,1 @@
+"""BidMonitor workbench application package."""
