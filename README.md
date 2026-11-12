@@ -1,101 +1,102 @@
-﻿# 🔍 BidMonitor AI - 智能招投标监控系统
+# BidMonitor AI · 招标监控与销售线索工作台
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+同一仓库保留两条独立版本线。请选择对应分支，在不同目录中运行；两版的配置和数据库不共用。
 
-## 📖 项目简介
+| 版本 | 获取位置 | 适用场景 | 启动入口 |
+| --- | --- | --- | --- |
+| 团队工作台 | [`main`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/main) | 全行业项目搜索、项目详情、团队线索跟进 | `python run_workbench.py` |
+| 原版桌面修复版 1.7.6 | [`maintenance/original-v1.7`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/maintenance/original-v1.7) | Windows 桌面关键词监控、AI 二次筛选、多渠道通知 | `python run.py` |
+| 原始归档版 1.7 | [`v1.7-original`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/v1.7-original) 标签 | 查看、下载和运行未经本轮维护修改的历史版本 | `python run.py` |
 
-BidMonitor AI 是一款功能强大的招投标信息监控系统，支持：
+原版修复版的更新通过 PR 合入维护分支，工作台更新通过 PR 合入 `main`。标签保留历史版本；更新分支不会删除原始归档标签。
 
-- 🌐 **多网站监控** - 支持40+招标网站（政府采购、电力、能源等）
-- 🤖 **AI 智能过滤** - 使用 AI 二次筛选，精准匹配相关信息
-- 📧 **多渠道通知** - 邮件、短信、微信、语音电话
-- 🖥️ **双端部署** - Windows 桌面版 + 服务器 Web 版
-- 🔄 **自动运行** - 定时监控，24小时不间断
+## 团队工作台
 
-## 🚀 快速开始
+工作台面向团队自用，支持：
 
-### Windows 桌面版
+- 按关键词、行业、采购类别、地区、来源、公告类型和发布日期搜索；公告类型可多选。
+- 在已有条件上增加关键词二次筛选，各组筛选条件为“与”的关系。
+- 默认隐藏能够确定已截止或已结束的公告，也可切换查看范围。
+- 查看项目详情、原文链接、采购单位、预算和截止时间等已提取字段。
+- 将项目转为线索，维护负责人、跟进阶段、优先级、联系人和跟进记录。
+- 选择数据来源、手动采集、设置定时更新并查看来源状态。
 
-`ash
-# 安装依赖
-pip install -r requirements.txt
+安装 Python 3.10 或更高版本。以下命令适用于 Windows PowerShell：
 
-# 运行
-python run.py
-`
+```powershell
+git clone --branch main https://github.com/zhiqianzheng/BidMonitor-AI.git BidMonitor-Workbench
+cd BidMonitor-Workbench
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt -r server/requirements.txt
+.\.venv\Scripts\python.exe run_workbench.py
+```
 
-### 服务器 Web 版
+浏览器访问 <http://127.0.0.1:8765>。关闭运行进程会停止服务和定时更新；软件未运行时不会自动采集。可使用 `--port 8766` 更换端口，或使用 `--no-browser` 关闭自动打开浏览器。
 
-`ash
-cd server
-pip install -r requirements.txt
-python app.py
-# 访问 http://localhost:8080
-`
+该入口默认监听本机回环地址，适合本机使用；仓库中的本地工作台不等同于已经部署好的多人公网服务。
 
-详细部署请参考 `server/DEPLOY.md`
+## 原版桌面修复版 1.7.6
 
-## ✨ 功能特性
+### 已维护的功能
 
-### 1. 关键词配置
-- 包含关键词：匹配任意一个即命中
-- 排除关键词：过滤不相关内容
-- 必含关键词：标题必须包含
+- **历史结果列表**：分页查询，按关键词、来源、发布日期、通知状态筛选，打开原文并导出符合条件的 CSV。
+- **规则预览**：查看关键词、必须包含词、排除词的命中结果。关键词组内任意命中；必须包含词组内任意命中；两组之间同时满足，排除词命中则排除。匹配范围包括标题和已取得的正文。
+- **采集与诊断**：修复浏览器会话恢复、动态页面和部分子页面提取，浏览器依赖不可用时真正回退普通 HTTP；区分访问限制、登录页、空页面及部分采集失败；过滤已识别的导航、会员续费等无关内容。
+- **自定义来源**：支持只添加自定义网站、不启用内置来源；浏览器模式保留短标题及无固定招采词的候选，再按用户关键词匹配。自定义网站应填写公开公告列表页地址；无效配置、来源加载失败和没有可用来源时会明确提示。
+- **AI 配置**：用户填写 API URL 和 API Key，一键获取接口返回的模型列表，在下拉框选择模型，再实际调用所选模型检测可用性。兼容常见聊天接口，部分原生消息接口也受支持。
+- **运行和通知**：启动时保存本轮配置快照，避免后台线程读取界面变量；支持停止任务、失败后的待复核重试，以及按收件人记录通知结果，避免重复发送成功记录。
 
-### 2. 多网站支持
-- 政府采购网、中国招标网、中国能建、国家电网...
-- 支持自定义网站配置
-- Selenium 模式绕过反爬虫
+截图中所述“只选择自定义来源就直接结束”的现象，在当前维护版中未复现。1.7.6 修复的是已确认存在的相关误报：没有加载任何采集来源时，不再显示“检索完成、0 条”，而是提示本轮未抓取网站并引导检查来源配置。
 
-### 3. 通知方式
-- 📧 邮件通知（支持多邮箱）
-- 📱 短信通知（阿里云/腾讯云）
-- 💬 微信推送（PushPlus）
-- 📞 语音电话（阿里云）
+### 安装和运行
 
-### 4. AI 智能过滤
-- 支持 DeepSeek、OpenAI 等 API
-- 自动过滤无关招标信息
+Windows 建议使用带 Tkinter 的 Python 3.10 或更高版本；浏览器模式需要本机安装 Google Chrome。
 
-## 📁 项目结构
+```powershell
+git clone --branch maintenance/original-v1.7 https://github.com/zhiqianzheng/BidMonitor-AI.git BidMonitor-Original
+cd BidMonitor-Original
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install selenium webdriver-manager
+.\.venv\Scripts\python.exe run.py
+```
 
-`
-BidMonitor-AI/
-├── src/                 # 核心代码
-│   ├── gui.py           # 桌面 GUI
-│   ├── monitor_core.py  # 监控核心
-│   ├── ai_guard.py      # AI 过滤
-│   ├── crawler/         # 爬虫模块
-│   ├── notifier/        # 通知模块
-│   └── database/        # 数据存储
-├── server/              # 服务器版
-│   ├── app.py           # FastAPI 应用
-│   ├── static/          # Web 前端
-│   └── setup.sh         # 部署脚本
-├── run.py               # 启动入口
-└── requirements.txt     # 依赖列表
-`
+浏览器驱动首次准备可能需要联网。选择普通模式可采集静态 HTML；动态页面可尝试浏览器模式。短信、语音等通知需要对应服务账号、权限及额外 SDK，按所选通知服务安装和配置。
 
-## 🔧 配置说明
+### 首次使用
 
-首次运行后，在界面中配置：
+1. 设置关注关键词、必须包含词和排除词。默认词是原版历史示例，可按自己的行业全部替换。
+2. 在“管理监控网站”中勾选内置来源，或添加自定义网站，点击“保存并关闭”。**至少配置一个有效来源**，只填写 AI 信息不会产生采集来源。
+3. 如需 AI 筛选，填写兼容接口的 URL 和 Key，获取模型，选择模型并点击“测试可用性”。模型列表表示接口列出了该模型，不保证该 Key 对所有模型都有调用权限。
+4. 按需配置联系人和通知渠道，然后点击“立即检索”或“启动监控”。没有通知渠道时仍可查询已入库结果。
+5. 使用“历史结果”和“规则预览”检查数据与匹配规则。运行中修改规则、来源或 AI 配置后，停止当前任务再重新启动才应用新配置。
 
-1. **关键词** - 根据需求设置监控关键词
-2. **通知方式** - 配置邮箱/短信/微信等
-3. **网站源** - 选择需要监控的网站
-4. **AI 过滤** - （可选）配置 API Key
+“测试可用性”会发送一次简短模型请求，可能消耗接口额度。配置会在开始检索、启动监控和保存网站配置等操作时写入本机文件；填写后仅测试接口并不等于已经保存全部设置。
 
-配置会自动保存到 `user_config.json`
+## 数据、配置和版本隔离
 
-## 📄 开源协议
+- 每个版本使用独立的克隆目录和虚拟环境，不在两版之间复制或共用 SQLite 数据库。
+- 原版默认在自己的运行目录保存 `user_config.json`、`data/bids.db` 和 `output_log.txt`；配置可能包含 API Key、通知服务凭据和联系人信息。
+- 工作台使用自己目录下的数据文件；不要将原版数据库路径配置为工作台数据库路径。
+- 转发源码或发布包时，排除私人配置、数据库、日志、导出结果、浏览器资料及访问凭据。仓库不附带个人配置、采集数据库或 Windows 免安装包。
+- 更换代码版本前先单独备份本机数据。代码回退不会自动恢复数据库、配置或已经运行的程序。
 
-本项目采用 [MIT License](LICENSE) 开源协议
+下载未经维护的原始版本：
 
-## 🤝 贡献
+```powershell
+git clone --branch v1.7-original https://github.com/zhiqianzheng/BidMonitor-AI.git BidMonitor-Original-Archive
+```
 
-欢迎提交 Issue 和 Pull Request！
+归档版与修复版使用不同目录；不要在归档目录中直接覆盖修复版文件。
 
----
+## 覆盖范围与已知限制
 
-⭐ 如果这个项目对你有帮助，请给个 Star！
+- 来源目录中的“已登记”不等于该站点当前采集成功，也不等于已经覆盖其全部栏目、分页和历史数据。部分来源仍可能无数据或仅部分采集。
+- 浏览器模式帮助读取动态页面，不能保证通过验证码、登录、会员限制或站点访问控制。遇到限制会报告原因；不会把未抓取成功当作正常空结果。
+- 自定义网站使用通用解析逻辑，不保证适配任意页面、脚本跳转或专有接口；优先提供公开公告列表页，必要时需增加专用适配。
+- 截止时间、预算、采购单位等字段取决于来源是否公开及解析结果；未知字段不应被当作已验证值，最终以来源原文为准。
+- 一次实跑成功只证明该时间、该入口和该模式的结果，不代表全网持续完整覆盖。原版 1.7.6 已完成本地 99 项检查，并对仅配置自定义来源的普通模式和真实 Chrome 模式做过采集验证；Windows 免安装包需另行构建和验证。
+
+## 许可证
+
+采用 [MIT License](LICENSE)。欢迎通过 Issue 报告具体页面、操作步骤与脱敏日志，通过 Pull Request 提交修复。
