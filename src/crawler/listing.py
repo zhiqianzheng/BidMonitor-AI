@@ -57,7 +57,7 @@ def page_problem(html, url=''):
     return None
 
 
-def parse_links(html, base_url, source):
+def parse_links(html, base_url, source, generic=False):
     soup, bids, seen = BeautifulSoup(html, 'lxml'), [], set()
     base = soup.find('base', href=True)
     if base:
@@ -99,19 +99,19 @@ def parse_links(html, base_url, source):
         ) or (
             parsed.hostname == 'etp.faw.cn' and parsed.path == '/gg/toGongGaoDetail' and bool(parse_qs(parsed.query).get('guid'))
         )
-        if parsed.hostname == 'new.ebidding.cecep.cn' and not public_detail:
+        if not generic and parsed.hostname == 'new.ebidding.cecep.cn' and not public_detail:
             continue
-        if parsed.hostname in ('www.szecp.com.cn', 'szecp.com.cn') and not public_detail:
+        if not generic and parsed.hostname in ('www.szecp.com.cn', 'szecp.com.cn') and not public_detail:
             continue
-        if ceec and not ceec_detail:
+        if not generic and ceec and not ceec_detail:
             continue
         if (len(tooltip) > len(title) or (parsed.hostname == 'etp.faw.cn' and tooltip)) and (not ceec or 'yugao_detail.aspx' not in url.lower()):
             title = re.split(r'\s*发布时间\s*[:：]', tooltip)[0].strip()
         if is_notice_noise(title, url) or a.find_parent(['nav', 'footer', 'header']):
             continue
-        if len(title) < (6 if public_detail else 10):
+        if len(title) < (4 if generic else (6 if public_detail else 10)):
             continue
-        if not public_detail and not any(k in title for k in ['招标', '采购', '中标', '询价', '竞价', '成交', '谈判', '磋商', '遴选', '比选', '公示', '公告', '招募']):
+        if not generic and not public_detail and not any(k in title for k in ['招标', '采购', '中标', '询价', '竞价', '成交', '谈判', '磋商', '遴选', '比选', '公示', '公告', '招募']):
             continue
         if any(k in title for k in ['寻源询价系统', '操作手册', '平台登录', '平台入口']):
             continue

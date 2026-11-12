@@ -210,7 +210,7 @@ class MonitorCore:
             self.crawler_load_errors.append({'name': name, 'error': error, 'status': 'load_failed'})
             self.log(f"[来源加载失败] {name}: {error}")
 
-        crawler_config = self.config.get('crawler', {})
+        crawler_config = dict(self.config.get('crawler', {}))
         crawler_config['search_keywords'] = self.keywords[:3]
         
         # 获取启用的网站列表
@@ -218,15 +218,6 @@ class MonitorCore:
         
         # 1. 加载内置爬虫类
         crawler_classes = get_all_crawlers()
-        
-        for name in enabled:
-            if name in crawler_classes:
-                try:
-                    crawler = crawler_classes[name](crawler_config)
-                    crawlers.append(crawler)
-                    self.log(f"[OK] Loaded crawler: {name}")
-                except Exception as e:
-                    load_error(name, str(e))
         
         # 判断是否使用Selenium模式
         use_selenium = crawler_config.get('use_selenium', False)
@@ -246,6 +237,16 @@ class MonitorCore:
             except ImportError as e:
                 self.log(f"[WARN] Selenium模块文件加载失败: {e}，回退到普通模式")
                 use_selenium = False
+        crawler_config['use_selenium'] = use_selenium
+
+        for name in enabled:
+            if name in crawler_classes:
+                try:
+                    crawler = crawler_classes[name](crawler_config)
+                    crawlers.append(crawler)
+                    self.log(f"[OK] Loaded crawler: {name}")
+                except Exception as e:
+                    load_error(name, str(e))
         
         try:
             from .crawler.custom import CustomCrawler
@@ -282,7 +283,7 @@ class MonitorCore:
                 if parsed.scheme.lower() not in ('http', 'https') or not parsed.hostname:
                     raise ValueError('列表页 URL 无效，请填写完整的 http:// 或 https:// 地址')
                 if use_selenium:
-                    crawler = SeleniumCrawler(crawler_config, name, url, headless=True)
+                    crawler = SeleniumCrawler(dict(crawler_config, custom_site=True), name, url, headless=True)
                     self.log(f"[OK] Loaded custom (Selenium): {name}")
                 else:
                     crawler = CustomCrawler(crawler_config, name, url)

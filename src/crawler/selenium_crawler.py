@@ -219,7 +219,7 @@ class SeleniumCrawler:
         pages = self.rendered_pages if self.rendered_pages and self.rendered_pages[0][1] == html else [(self.page_url, html)]
         bids, seen = [], set()
         for url, page in pages:
-            for bid in parse_links(page, url, self.name):
+            for bid in parse_links(page, url, self.name, generic=self.config.get('custom_site', False)):
                 if bid.url not in seen:
                     seen.add(bid.url)
                     bids.append(bid)
