@@ -1,6 +1,6 @@
 """
 中国采购与招标网爬虫 - 修复版2
-网站：https://www.chinabidding.com.cn/
+网站：https://www.chinabidding.cn/
 """
 from typing import List, Dict, Any
 from urllib.parse import urljoin
@@ -11,7 +11,7 @@ class ChinaBiddingCrawler(BaseCrawler):
     """中国采购与招标网爬虫"""
     
     name = "chinabidding"
-    base_url = "https://www.chinabidding.com.cn"
+    base_url = "https://www.chinabidding.cn"
     
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
@@ -19,14 +19,7 @@ class ChinaBiddingCrawler(BaseCrawler):
     
     def get_list_urls(self) -> List[str]:
         """使用正确的列表页URL"""
-        return [
-            # 综合要闻
-            "https://www.chinabidding.com.cn/html/3000000009866/1.html",
-            # 行业动态  
-            "https://www.chinabidding.com.cn/html/3000000009966/1.html",
-            # 首页
-            "https://www.chinabidding.com.cn/",
-        ]
+        return [self.base_url + '/']
     
     def parse(self, html: str) -> List[BidInfo]:
         """解析页面"""

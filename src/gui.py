@@ -1299,7 +1299,7 @@ class MonitorGUI:
     
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("招标信息监控系统 · 原版修复版 1.7.2")
+        self.root.title("招标信息监控系统 · 原版修复版 1.7.6")
         self.root.geometry("720x920")
         self.root.resizable(True, True)
         
@@ -1799,11 +1799,12 @@ class MonitorGUI:
         
         self.selenium_cb = ttk.Checkbutton(
             selenium_frame, 
-            text="🌐 启用浏览器模式 (Selenium) - 可绕过反爬虫机制",
+            text="🌐 浏览器模式 (Selenium) · 支持动态页面",
             variable=self.use_selenium_var,
             command=on_selenium_toggle
         )
         self.selenium_cb.pack(side=tk.LEFT)
+        ToolTip(self.selenium_cb, "支持动态页面；验证码、登录限制和网站故障仍需人工处理，不保证所有网站均可采集。")
         
         # 统一的环境检测/状态按钮
         # 初始状态根据检查结果设置，在 _update_selenium_status 中会再次刷新
@@ -1900,68 +1901,42 @@ class MonitorGUI:
         ai_frame = ttk.LabelFrame(main_frame, text="🤖 AI 智能过滤", padding="15")
         ai_frame.pack(fill=tk.X, pady=10)
         
-        # 预设的 API 配置（URL需包含完整API端点路径）- 开源版本不包含预设密钥
-        self.ai_presets = {
-            "https://api.deepseek.com/chat/completions": {
-                "key": "",  # 请填入您的DeepSeek API Key
-                "models": ["deepseek-chat"],
-                "default_model": "deepseek-chat"
-            },
-            "https://api.openai.com/v1/chat/completions": {
-                "key": "",  # 请填入您的OpenAI API Key
-                "models": ["gpt-4", "gpt-3.5-turbo"],
-                "default_model": "gpt-3.5-turbo"
-            },
-        }
-        
-        # 启用开关 - 开源版本默认关闭（需用户配置API Key后启用）
         self.ai_enable_var = tk.BooleanVar(value=False)
         ttk.Checkbutton(ai_frame, text="启用 AI 智能分析 (二次筛选)", variable=self.ai_enable_var).pack(anchor=tk.W)
-        
-        # URL 行
-        ai_url_row = ttk.Frame(ai_frame)
-        ai_url_row.pack(fill=tk.X, pady=(5, 0))
-        
-        ttk.Label(ai_url_row, text="API URL:").pack(side=tk.LEFT)
-        self.ai_url_var = tk.StringVar(value="https://api.deepseek.com/chat/completions")
-        self.ai_url_combo = ttk.Combobox(ai_url_row, textvariable=self.ai_url_var, 
-                                          values=list(self.ai_presets.keys()), width=35)
-        self.ai_url_combo.pack(side=tk.LEFT, padx=5)
-        self.ai_url_combo.bind("<<ComboboxSelected>>", self._on_ai_url_changed)
-        self.ai_url_combo.bind("<FocusOut>", self._on_ai_url_changed)
-        
-        # Key 行
-        ai_key_row = ttk.Frame(ai_frame)
-        ai_key_row.pack(fill=tk.X, pady=(5, 0))
-        
-        ttk.Label(ai_key_row, text="API Key:").pack(side=tk.LEFT)
-        self.ai_key_var = tk.StringVar(value="")  # 开源版本默认空
-        all_keys = [p["key"] for p in self.ai_presets.values()]
-        self.ai_key_combo = ttk.Combobox(ai_key_row, textvariable=self.ai_key_var, 
-                                          values=all_keys, width=50)
-        self.ai_key_combo.pack(side=tk.LEFT, padx=5)
-        
-        # 模型行
-        ai_model_row = ttk.Frame(ai_frame)
-        ai_model_row.pack(fill=tk.X, pady=(5, 0))
-        
-        ttk.Label(ai_model_row, text="模型:").pack(side=tk.LEFT)
-        self.ai_model_var = tk.StringVar(value="deepseek-chat")
-        # 收集所有模型
-        all_models = []
-        for p in self.ai_presets.values():
-            all_models.extend(p["models"])
-        self.ai_model_combo = ttk.Combobox(ai_model_row, textvariable=self.ai_model_var, 
-                                            values=list(dict.fromkeys(all_models)), width=40)
-        self.ai_model_combo.pack(side=tk.LEFT, padx=5)
-        
-        tk.Button(ai_model_row, text="🧪 测试连接", command=self._test_ai_connection,
-                  bg="#6366f1", fg="white", relief=tk.GROOVE, padx=10).pack(side=tk.LEFT, padx=15)
-        
-        # 提示词说明
-        ttk.Label(ai_frame, text="提示: 选择预设API或自由输入。切换URL会自动填充对应的Key和模型。",
-                  foreground="#888").pack(anchor=tk.W, pady=(5, 0))
-        
+        row = ttk.Frame(ai_frame)
+        row.pack(fill=tk.X, pady=5)
+        ttk.Label(row, text="API URL:").pack(side=tk.LEFT)
+        self.ai_url_var = tk.StringVar(value="https://api.deepseek.com")
+        self.ai_url_combo = ttk.Entry(row, textvariable=self.ai_url_var, width=60)
+        self.ai_url_combo.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
+        row = ttk.Frame(ai_frame)
+        row.pack(fill=tk.X, pady=5)
+        ttk.Label(row, text="API Key:").pack(side=tk.LEFT)
+        self.ai_key_var = tk.StringVar(value="")
+        self.ai_key_combo = ttk.Entry(row, textvariable=self.ai_key_var, width=50, show="*")
+        self.ai_key_combo.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
+        self.ai_show_key = tk.BooleanVar(value=False)
+        ttk.Checkbutton(row, text="显示", variable=self.ai_show_key,
+                        command=lambda:self.ai_key_combo.config(show='' if self.ai_show_key.get() else '*')).pack(side=tk.LEFT)
+        row = ttk.Frame(ai_frame)
+        row.pack(fill=tk.X, pady=5)
+        ttk.Label(row, text="模型:").pack(side=tk.LEFT)
+        self.ai_model_var = tk.StringVar(value="")
+        self.ai_model_combo = ttk.Combobox(row, textvariable=self.ai_model_var, values=[], state='readonly', width=32)
+        self.ai_model_combo.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
+        self.ai_models_btn = ttk.Button(row, text="获取模型", command=self._fetch_ai_models)
+        self.ai_models_btn.pack(side=tk.LEFT, padx=5)
+        self.ai_test_btn = ttk.Button(row, text="测试可用性", command=self._test_ai_connection)
+        self.ai_test_btn.pack(side=tk.LEFT, padx=5)
+        self.ai_status_var = tk.StringVar(value="填写 URL 和 Key 后获取模型，再选择模型测试。")
+        ttk.Label(ai_frame, textvariable=self.ai_status_var, wraplength=580, foreground='#555').pack(anchor=tk.W, pady=5)
+        ttk.Label(ai_frame, text="支持兼容聊天接口：根地址、/v1 或完整端点。模型列表仅表示接口可见，调用权限需测试确认。",
+                  wraplength=580, foreground='#888').pack(anchor=tk.W)
+        ttk.Label(ai_frame, text="测试会发送一次简短模型请求，可能消耗少量额度。", foreground='#888').pack(anchor=tk.W)
+        self._ai_api_busy = False
+        self.ai_url_var.trace_add('write', self._invalidate_ai_models)
+        self.ai_key_var.trace_add('write', self._invalidate_ai_models)
+
         # === 运行控制 ===
         ctrl_frame = ttk.LabelFrame(main_frame, text="🎮 运行控制", padding="15")
         ctrl_frame.pack(fill=tk.X, pady=10)
@@ -2664,7 +2639,7 @@ class MonitorGUI:
         if is_available:
             # 环境就绪 -> 绿色按钮，提示已就绪
             self.selenium_env_btn.config(
-                text="✅ 浏览器环境就绪",
+                text="✅ 浏览器启动已验证" if getattr(self, 'browser_runtime_checked', False) else "🛠️ Chrome 已安装·点击实测",
                 fg="green",
                 bg="#f0fdf4", # 浅绿背景
                 state=tk.NORMAL # 允许再次点击测试
@@ -2695,54 +2670,47 @@ class MonitorGUI:
         self.log("🛠️ 开始环境诊断与自动配置...")
         
         def run_diagnostic():
+            driver = None
             try:
                 # 1. 尝试导入 & 安装驱动
-                from selenium import webdriver
-                from selenium.webdriver.chrome.service import Service
-                from selenium.webdriver.chrome.options import Options
                 from selenium.webdriver.common.by import By
-                from selenium.webdriver.support.ui import WebDriverWait
-                from selenium.webdriver.support import expected_conditions as EC
-                from webdriver_manager.chrome import ChromeDriverManager
-                
-                # 配置 Headless 模式
-                chrome_options = Options()
-                chrome_options.add_argument("--headless") 
-                chrome_options.add_argument("--disable-gpu")
-                chrome_options.add_argument("--no-sandbox")
-                
-                # 尝试安装驱动并启动
-                self.log("DEBUG: 正在检查/下载 ChromeDriver (这可能需要几分钟)...")
-                # 这一步会自动下载匹配的驱动
-                driver_path = ChromeDriverManager().install()
-                self.log(f"DEBUG: 驱动就绪: {driver_path}")
-                
-                service = Service(driver_path)
-                
-                self.log("DEBUG: 正在尝试启动浏览器...")
-                driver = webdriver.Chrome(service=service, options=chrome_options)
+                self.queue_log("正在检查驱动并实测 Chrome 启动和页面渲染...")
+                try:
+                    from .crawler.selenium_crawler import SharedBrowserManager
+                except ImportError:
+                    from crawler.selenium_crawler import SharedBrowserManager
+                driver = SharedBrowserManager._create_driver(20)
+                if driver is None:
+                    raise RuntimeError('无法启动 Chrome，请检查驱动和浏览器版本')
                 
                 # 简单访问测试
                 driver.get("data:text/html,<html><body><h1>OK</h1></body></html>")
-                title = driver.title
-                driver.quit()
+                if driver.find_element(By.TAG_NAME, 'h1').text != 'OK':
+                    raise RuntimeError('浏览器页面渲染检查失败')
                 
                 self.root.after(0, lambda: self._on_diagnostic_success("测试通过！环境配置成功。"))
                 
             except Exception as e:
                 error = str(e)
                 self.root.after(0, lambda: self._on_diagnostic_fail(error))
+            finally:
+                if driver:
+                    try:
+                        driver.quit()
+                    except Exception:
+                        pass
                 
         import threading
         threading.Thread(target=run_diagnostic, daemon=True).start()
 
     def _on_diagnostic_success(self, msg):
+        self.browser_runtime_checked = True
         self.log(f"✅ {msg}")
         
         # 按钮变绿
         if hasattr(self, 'selenium_env_btn'):
             self.selenium_env_btn.config(
-                text="✅ 浏览器环境就绪", 
+                text="✅ 浏览器启动已验证",
                 fg="green", 
                 bg="#f0fdf4",
                 state=tk.NORMAL
@@ -2754,6 +2722,7 @@ class MonitorGUI:
         self.log("✅ 已自动勾选'启用浏览器模式'")
 
     def _on_diagnostic_fail(self, error_msg):
+        self.browser_runtime_checked = False
         self.log(f"❌ 环境配置失败: {error_msg}")
         
         # 按钮变红
@@ -2988,12 +2957,14 @@ class MonitorGUI:
                         if hasattr(self, 'ai_key_var'):
                             self.ai_key_var.set(config['ai'].get('api_key', ''))
                         if hasattr(self, 'ai_model_var'):
-                            self.ai_model_var.set(config['ai'].get('model', 'deepseek-chat'))
+                            self.ai_model_var.set(config['ai'].get('model', ''))
+                            self.ai_model_combo.config(values=[self.ai_model_var.get()] if self.ai_model_var.get() else [])
+                            self.ai_status_var.set('已加载保存的模型；可重新获取列表并测试。' if self.ai_model_var.get() else '填写 URL 和 Key 后获取模型，再选择模型测试。')
                     # 加载Selenium设置（只有在Selenium可用时才根据配置启用）
                     if hasattr(self, 'use_selenium_var'):
                         saved_selenium = config.get('use_selenium', True)
                         # 只有 Selenium 可用时才使用保存的设置
-                        if self._check_selenium_available():
+                        if self._check_selenium_available()['status']:
                             self.use_selenium_var.set(saved_selenium)
                         else:
                             self.use_selenium_var.set(False)
@@ -3045,9 +3016,9 @@ class MonitorGUI:
             'theme': self.theme_config,
             'ai': {
                 'enable': self.ai_enable_var.get() if hasattr(self, 'ai_enable_var') else False,
-                'base_url': self.ai_url_var.get() if hasattr(self, 'ai_url_var') else 'https://cc.honoursoft.cn/',
+                'base_url': self.ai_url_var.get() if hasattr(self, 'ai_url_var') else 'https://api.deepseek.com',
                 'api_key': self.ai_key_var.get() if hasattr(self, 'ai_key_var') else '',
-                'model': self.ai_model_var.get().strip() if hasattr(self, 'ai_model_var') else 'claude-sonnet-4-5-20250929-thinking',
+                'model': self.ai_model_var.get().strip() if hasattr(self, 'ai_model_var') else '',
             },
         }
         try:
@@ -3056,61 +3027,71 @@ class MonitorGUI:
         except Exception as e:
             self.log(f"保存配置失败: {e}")
 
+    def _invalidate_ai_models(self, *args):
+        self.ai_model_combo.config(values=[])
+        self.ai_model_var.set('')
+        self.ai_status_var.set('配置已修改，请重新获取模型并测试。')
+
     def _on_ai_url_changed(self, event=None):
-        """当 AI URL 变更时，自动填充对应的 Key 和 Model"""
-        url = self.ai_url_var.get().strip()
-        
-        # 检查是否是预设的 URL
-        if url in self.ai_presets:
-            preset = self.ai_presets[url]
-            # 自动填充 API Key
-            self.ai_key_var.set(preset["key"])
-            # 自动填充默认模型
-            self.ai_model_var.set(preset["default_model"])
-            # 更新模型下拉列表为该 URL 支持的模型
-            self.ai_model_combo['values'] = preset["models"]
-            self.log(f"🔗 已切换到 {url.split('//')[1].split('/')[0]} API")
+        self._invalidate_ai_models()
+
+    def _fetch_ai_models(self):
+        self._run_ai_api_action('models')
 
     def _test_ai_connection(self):
-        """测试 AI API 连接"""
-        key = self.ai_key_var.get().strip()
-        url = self.ai_url_var.get().strip()
-        # 获取模型名称
-        model = self.ai_model_var.get().strip()
-        
-        if not key:
-            messagebox.showwarning("提示", "请先输入 API Key")
+        self._run_ai_api_action('test')
+
+    def _run_ai_api_action(self, action):
+        if self._ai_api_busy:
             return
-            
-        self.log(f"🧪 正在测试 AI 连接 ({url})...")
-        
-        def run_test():
+        url, key, model = self.ai_url_var.get().strip(), self.ai_key_var.get().strip(), self.ai_model_var.get().strip()
+        try:
+            from .ai_api import endpoints, ApiError, list_models, test_model
+            endpoints(url)
+            if not key:
+                raise ApiError('请先填写 API Key。')
+            if action == 'test' and not model:
+                raise ApiError('请先获取模型并从下拉列表选择。')
+        except ValueError as exc:
+            self.ai_status_var.set(str(exc))
+            return
+        self._ai_api_busy = True
+        self.ai_models_btn.config(state=tk.DISABLED)
+        self.ai_test_btn.config(state=tk.DISABLED)
+        self.ai_status_var.set('正在获取接口返回的模型列表...' if action == 'models' else '正在实际调用所选模型...')
+
+        def finish(result, error):
+            self._ai_api_busy = False
+            self.ai_models_btn.config(state=tk.NORMAL)
+            self.ai_test_btn.config(state=tk.NORMAL)
+            if (url, key) != (self.ai_url_var.get().strip(), self.ai_key_var.get().strip()) or (action == 'test' and model != self.ai_model_var.get().strip()):
+                self.ai_status_var.set('配置已修改，已忽略旧检测结果，请重新检测。')
+                return
+            if error:
+                self.ai_status_var.set(error)
+            elif action == 'models':
+                self.ai_model_combo.config(values=result)
+                self.ai_model_var.set(model if model in result else result[0])
+                self.ai_status_var.set(f'已获取 {len(result)} 个模型，请选择后测试可用性。')
+            else:
+                self.ai_status_var.set('测试通过：所选模型已返回有效文本，URL 和 Key 可用。')
+
+        def worker():
             try:
-                from ai_guard import AIGuard
-                guard = AIGuard({
-                    'api_key': key,
-                    'base_url': url,
-                    'model': model,
-                    'enable': True
-                })
-                is_rel, reason = guard.check_relevance(
-                    "某省风力发电场无人机智能巡检服务采购项目", 
-                    "本项目采购2025年度风电场无人机精细化巡检服务，包括可见光及红外检测...",
-                    raise_on_error=True  # 测试时需要捕获真实错误
-                )
-                self.root.after(0, lambda: messagebox.showinfo(
-                    "测试成功", 
-                    f"✅ 连接成功！\n\nAI分析结果:\n判断: {'相关' if is_rel else '不相关'}\n理由: {reason}"
-                ))
-                self.log("✅ AI 连接测试通过")
-            except Exception as e:
-                self.root.after(0, lambda error=str(e): messagebox.showerror("测试失败", f"❌ 连接失败:\n{error}"))
-                self.log(f"❌ AI 连接失败: {str(e)}")
-                
-        import threading
-        threading.Thread(target=run_test, daemon=True).start()
+                result = list_models(url, key) if action == 'models' else test_model(url, key, model)
+                error = None
+            except ApiError as exc:
+                result, error = None, str(exc)
+            except Exception:
+                result, error = None, '检测失败，服务响应异常；请核对地址和接口兼容性。'
+            self.root.after(0, lambda:finish(result, error))
+        threading.Thread(target=worker, daemon=True).start()
 
     def _validate_input(self) -> bool:
+        if hasattr(self, 'ai_enable_var') and self.ai_enable_var.get():
+            if not all(v.get().strip() for v in (self.ai_url_var, self.ai_key_var, self.ai_model_var)):
+                messagebox.showwarning('AI配置未完成', '请填写 API URL、API Key，并获取和选择模型后再启用 AI。')
+                return False
         try:
             interval = int(self.interval_var.get())
             if not 1 <= interval <= 10080:
@@ -3328,12 +3309,12 @@ class MonitorGUI:
             core.crawlers = core._init_crawlers()
             
             # 统计爬虫类型
-            selenium_count = sum(1 for c in core.crawlers if c.__class__.__name__ == 'SeleniumCrawler')
+            selenium_count = sum(1 for c in core.crawlers if use_selenium and (c.__class__.__name__ == 'SeleniumCrawler' or c.config.get('use_selenium')))
             normal_count = len(core.crawlers) - selenium_count
             self.queue_log(f"[爬虫] 已加载: {selenium_count} 个Selenium爬虫, {normal_count} 个普通爬虫")
             
             # 如果启用了 Selenium 但没有加载 Selenium 爬虫，警告用户
-            if use_selenium and selenium_count == 0:
+            if use_selenium and core.crawlers and selenium_count == 0:
                 self.queue_log("[警告] Selenium已启用但未加载任何Selenium爬虫，请检查Selenium是否正确安装")
             
             # 显示检索进度
@@ -3348,6 +3329,10 @@ class MonitorGUI:
             
             result = core.run_once(progress_callback=progress_callback, stop_event=self.stop_event)
             new_count = result.get('new_count', 0)
+            if result.get('source_error'):
+                self.queue_log(f"检索未执行：{result['source_error']}")
+                self.root.after(0, lambda: self.status_var.set('来源配置错误：未抓取网站，请检查网站源管理'))
+                return
             
             # 记录是否被停止
             was_stopped = self.stop_event.is_set()
@@ -3359,7 +3344,10 @@ class MonitorGUI:
                 self.queue_log(f"检索已停止，已保存 {new_count} 条新信息，待下次运行通知")
                 return
             
-            from notifier.service import NotificationService
+            try:
+                from .notifier.service import NotificationService
+            except ImportError:
+                from notifier.service import NotificationService
             NotificationService(core.storage, self.queue_log).send_pending(config, self.stop_event)
             
             self.queue_log(f"检索完成，发现 {new_count} 条新信息")

@@ -15,13 +15,16 @@ class History:
         self.path = Path(path).resolve()
 
     def connect(self):
-        return sqlite3.connect(self.path.as_uri() + '?mode=ro', uri=True, timeout=10)
+        from .crawler.listing import is_notice_noise
+        db = sqlite3.connect(self.path.as_uri() + '?mode=ro', uri=True, timeout=10)
+        db.create_function('notice_noise', 2, is_notice_noise, deterministic=True)
+        return db
 
     def sources(self):
         if not self.path.exists():
             return []
         with closing(self.connect()) as db:
-            return [r[0] for r in db.execute("SELECT DISTINCT source FROM bids WHERE source<>'' ORDER BY source")]
+            return [r[0] for r in db.execute("SELECT DISTINCT source FROM bids WHERE source<>'' AND NOT notice_noise(title,url) ORDER BY source")]
 
     def query(self, keyword='', source='', notified='', start='', end='', limit=100, offset=0):
         for value in (start, end):
@@ -29,7 +32,7 @@ class History:
                 date.fromisoformat(value)
         if start and end and start > end:
             raise ValueError('开始日期不能晚于结束日期')
-        clauses, args = [], []
+        clauses, args = ['NOT notice_noise(title,url)'], []
         for term in keyword.split():
             term = term.replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
             clauses.append(r"(title LIKE ? ESCAPE '\' OR content LIKE ? ESCAPE '\' OR purchaser LIKE ? ESCAPE '\')")
@@ -145,7 +148,7 @@ def show_history(gui):
             for item in tree.get_children(): tree.delete(item)
             for row in rows:
                 tree.insert('', 'end', values=[row['title'],row['publish_date'] or '未知',row['source'],row['purchaser'],'已完成通知' if row['notified'] else '待通知',row['url']])
-            status.set(f'共 {total} 条 · 第 {position // 100 + 1 if total else 0}/{(total + 99) // 100} 页 · 每页100条；日期筛选不含未知发布日期。')
+            status.set(f'共 {total} 条 · 第 {position // 100 + 1 if total else 0}/{(total + 99) // 100} 页 · 每页100条；已隐藏导航和平台服务信息，日期筛选不含未知发布日期。')
             previous.configure(state='normal' if position else 'disabled')
             following.configure(state='normal' if position + 100 < total else 'disabled')
         except (ValueError, sqlite3.Error) as error:

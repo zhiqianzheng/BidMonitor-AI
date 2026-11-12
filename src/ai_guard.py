@@ -1,5 +1,9 @@
 import json
 import logging
+try:
+    from .ai_api import endpoints, uses_messages
+except ImportError:
+    from ai_api import endpoints, uses_messages
 
 class AIGuard:
     def __init__(self, config=None, log_callback=None):
@@ -64,10 +68,7 @@ class AIGuard:
         user_content = f"项目标题: {title}\n项目内容: {content[:800]}"
 
         # 判断是否使用 Claude 原生格式（基于模型名称和URL）
-        is_claude_native = (
-            'claude' in self.model.lower() and 
-            'honoursoft' in self.base_url.lower()
-        )
+        is_claude_native = uses_messages(self.base_url, self.model)
         
         # 构造请求payload（自动兼容 Claude 和 OpenAI/DeepSeek 格式）
         if is_claude_native:
@@ -94,9 +95,14 @@ class AIGuard:
             }
 
         # 直接使用用户提供的URL，不添加任何后缀
-        url = self.base_url.rstrip('/')
+        try:
+            urls = endpoints(self.base_url, 'messages' if is_claude_native else 'chat/completions')
+        except ValueError:
+            if raise_on_error:
+                raise
+            return None, '待复核：API URL 格式无效'
 
-        self.log(f"🔗 [AI分析] 请求API: {self.base_url}")
+        self.log("🔗 [AI分析] 正在请求已配置的 API")
         self.log(f"📦 [AI分析] 使用模型: {self.model}")
 
         try:
@@ -107,6 +113,8 @@ class AIGuard:
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.api_key}"
             }
+            if is_claude_native:
+                headers.update({'x-api-key': self.api_key, 'anthropic-version': '2023-06-01'})
             
             max_retries = 3
             retry_delay = 2  # 秒
@@ -116,12 +124,14 @@ class AIGuard:
                     return None, "待复核：任务已停止"
                 try:
                     self.log(f"⏳ [AI分析] 正在等待AI响应...")
-                    resp = requests.post(url, headers=headers, json=payload, timeout=(10, 45))
+                    for index, url in enumerate(urls):
+                        resp = requests.post(url, headers=headers, json=payload, timeout=(10, 45), allow_redirects=False)
+                        if resp.status_code not in (404, 405) or index + 1 == len(urls):
+                            break
                     
                     if resp.status_code != 200:
-                        error_detail = resp.text[:200]
                         self.log(f"❌ [AI分析] API返回错误: HTTP {resp.status_code}")
-                        raise Exception(f"HTTP {resp.status_code}: {error_detail}")
+                        raise Exception(f"HTTP {resp.status_code}：请检查模型权限、额度和 API 地址")
                     
                     result = resp.json()
                     if 'choices' in result:

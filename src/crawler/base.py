@@ -46,6 +46,8 @@ class BaseCrawler(ABC):
         self.max_retries = config.get('max_retries', 3)
         self.logger = logging.getLogger(f"crawler.{self.name}")
         self.session = requests.Session()
+        self.last_status = 'not_started'
+        self.last_error = ''
     
     def _get_headers(self) -> Dict[str, str]:
         """获取请求头，随机选择 User-Agent 并添加更多浏览器特征"""
@@ -77,6 +79,14 @@ class BaseCrawler(ABC):
         Returns:
             页面HTML内容，失败返回None
         """
+        if self.config.get('use_selenium'):
+            from .selenium_crawler import SeleniumCrawler
+            browser = getattr(self, '_browser', None)
+            if browser is None:
+                browser = self._browser = SeleniumCrawler(self.config, self.name, url)
+            html = browser.fetch(url, stop_event=stop_event)
+            self.last_status, self.last_error = browser.last_status, browser.last_error
+            return html
         for attempt in range(self.max_retries):
             if stop_event and stop_event.is_set():
                 return None
@@ -91,6 +101,10 @@ class BaseCrawler(ABC):
                     verify=True,
                     allow_redirects=True
                 )
+                if response.status_code == 429:
+                    self.last_status, self.last_error = 'rate_limited', 'HTTP 429：站点限流，本轮停止请求此页面'
+                    self.logger.warning('%s: %s', url, self.last_error)
+                    return None
                 response.raise_for_status()
                 
                 # 尝试自动检测编码
@@ -105,6 +119,7 @@ class BaseCrawler(ABC):
                 else:
                     time.sleep(delay)
                 
+                self.last_status, self.last_error = 'loaded', ''
                 return response.text
                 
             except requests.exceptions.SSLError as e:
@@ -117,6 +132,8 @@ class BaseCrawler(ABC):
                 status_code = e.response.status_code if e.response is not None else 'N/A'
                 self.logger.warning(f"HTTP错误 {status_code}: {url}")
                 if status_code in [401, 403]:
+                    self.last_status = 'login_required' if status_code == 401 else 'blocked'
+                    self.last_error = f'HTTP {status_code}，需要授权或人工确认'
                     self.logger.info(f"该网站可能需要登录或被屏蔽了爬虫")
                     return None  # 不重试
             except requests.RequestException as e:
@@ -133,6 +150,7 @@ class BaseCrawler(ABC):
                     time.sleep(wait_time)
         
         self.logger.error(f"请求最终失败: {url}")
+        self.last_status, self.last_error = 'fetch_failed', f'页面请求失败: {url}'
         return None
     
     def parse_html(self, html: str) -> BeautifulSoup:
@@ -173,6 +191,7 @@ class BaseCrawler(ABC):
             所有抓取到的招标信息，如果全部失败返回None
         """
         all_bids = []
+        seen_urls = set()
         urls = self.get_list_urls()
         failed_count = 0
         
@@ -188,13 +207,17 @@ class BaseCrawler(ABC):
             if html:
                 # 检查是否被反爬虫拦截
                 if self._is_blocked(html):
+                    self.last_status, self.last_error = 'blocked', '页面要求验证或拒绝访问'
                     self.logger.warning(f"[{self.name}] BLOCKED by anti-crawler at {url}")
                     failed_count += 1
                     continue
                 
                 try:
                     bids = self.parse(html)
-                    all_bids.extend(bids)
+                    for bid in bids:
+                        if bid.url not in seen_urls:
+                            all_bids.append(bid)
+                            seen_urls.add(bid.url)
                     self.logger.info(f"[{self.name}] Got {len(bids)} items from {url}")
                 except Exception as e:
                     self.logger.error(f"[{self.name}] Parse failed {url}: {e}")
@@ -208,20 +231,18 @@ class BaseCrawler(ABC):
             return None
         
         self.logger.info(f"[{self.name}] Crawl done, got {len(all_bids)} items total")
+        if not all_bids:
+            self.last_status, self.last_error = 'no_announcements', '未提取到公告，需检查列表入口或页面结构'
+            return None
+        self.last_status = 'partial' if failed_count else 'ok'
+        if failed_count:
+            self.last_error = f'{len(urls)}个列表页中有{failed_count}页失败，可能漏采'
         return all_bids
     
     def _is_blocked(self, html: str) -> bool:
         """检查是否被反爬虫拦截"""
-        blocked_signs = [
-            '访问频繁', '请求过于频繁', '验证码', 'captcha',
-            '请稍后重试', '访问被拒绝', 'Access Denied',
-            '403 Forbidden', '请求被禁止', 'IP被封'
-        ]
-        html_lower = html.lower()
-        for sign in blocked_signs:
-            if sign.lower() in html_lower:
-                return True
-        return False
+        from .listing import page_problem
+        return page_problem(html) is not None
 
 
 class DemoCrawler(BaseCrawler):
