@@ -4,6 +4,7 @@
 import logging
 from typing import List, Dict, Any, Optional, Callable
 from datetime import datetime
+from urllib.parse import urlsplit
 
 import sys
 import os
@@ -63,11 +64,11 @@ def get_default_sites():
         'gdtzb': {'name': '国电投招标网', 'url': 'http://www.gdtzb.com'},
         'cpeinet': {'name': '中国电力设备信息网', 'url': 'http://www.cpeinet.com.cn/'},
         'espic': {'name': '电能e招采', 'url': 'https://ebid.espic.com.cn/'},
-        'chng': {'name': '华能集团电子商务平台', 'url': 'http://ec.chng.com.cn/ecmall/'},
+        'chng': {'name': '华能集团电子商务平台', 'url': 'https://ec.chng.com.cn/channel/home/#/'},
         'powerchina': {'name': '中国电建采购电子商务平台', 'url': 'http://ec.powerchina.cn'},
         'powerchina_bid': {'name': '中国电建采购招标数智化平台', 'url': 'https://bid.powerchina.cn/bidweb/'},
         'powerchina_ec': {'name': '中国电建设备物资集中采购平台', 'url': 'https://ec.powerchina.cn/'},
-        'powerchina_scm': {'name': '中国电建供应链云服务平台', 'url': 'https://scm.powerchina.cn/'},
+        'powerchina_scm': {'name': '中国电建供应链云服务平台', 'url': 'https://scm.powerchina.cn/page/information'},
         'powerchina_idx': {'name': '中国电建承包商管理系统', 'url': 'http://bid.powerchina.cn/index'},
         'powerchina_nw': {'name': '中国电建西北勘测设计研究院', 'url': 'http://ec1.powerchina.cn'},
         'ceec': {'name': '中国能建电子采购平台', 'url': 'https://ec.ceec.net.cn/'},
@@ -75,24 +76,24 @@ def get_default_sites():
         'chec_gys': {'name': '中国华电科工供应商填报系统', 'url': 'http://gys.chec.com.cn:90'},
         'chinazbcg': {'name': '中国招投标信息网', 'url': 'http://www.chinazbcg.com'},
         'cdt': {'name': '中国大唐电子商务平台', 'url': 'http://www.cdt-ec.com/'},
-        'ebidding': {'name': '国义招标', 'url': 'http://www.ebidding.com/portal/'},
+        'ebidding': {'name': '国义招标', 'url': 'https://www.ebidding.com/e-portal/business.html'},
         'neep': {'name': '国家能源e购', 'url': 'https://www.neep.shop/'},
         'ceic': {'name': '国家能源集团生态协作平台', 'url': 'https://cooperation.ceic.com/'},
         'sgcc': {'name': '国家电网电子商务平台', 'url': 'https://ecp.sgcc.com.cn/'},
-        'cecep': {'name': '中国节能环保电子采购平台', 'url': 'http://www.ebidding.cecep.cn/'},
+        'cecep': {'name': '中国节能慧采云平台', 'url': 'https://new.ebidding.cecep.cn/'},
         'gdg': {'name': '广州发展集团电子采购平台', 'url': 'https://eps.gdg.com.cn/'},
         'crpower': {'name': '华润电力', 'url': 'https://b2b.crpower.com.cn'},
-        'crc': {'name': '华润集团守正电子招标采购平台', 'url': 'https://szecp.crc.com.cn/'},
+        'crc': {'name': '华润守正采购交易平台', 'url': 'https://www.szecp.com.cn/'},
         'longi': {'name': '隆基股份SRM系统', 'url': 'https://srm.longi.com:6080'},
         'cgnpc': {'name': '中广核电子商务平台', 'url': 'https://ecp.cgnpc.com.cn'},
         'dongfang': {'name': '东方电气', 'url': 'http://nsrm.dongfang.com/'},
         'zjycgzx': {'name': '浙江云采购中心', 'url': 'https://www.zjycgzx.com'},
         'ctg': {'name': '中国三峡电子采购平台', 'url': 'https://eps.ctg.com.cn/'},
         'sdicc': {'name': '国投集团电子采购平台', 'url': 'https://www.sdicc.com.cn/'},
-        'csg': {'name': '中国南方电网供应链服务平台', 'url': 'http://www.bidding.csg.cn/'},
+        'csg': {'name': '中国南方电网供应链服务平台', 'url': 'https://www.bidding.csg.cn/zbcg/index.jhtml'},
         'sgccetp': {'name': '国网电子商务平台电工交易专区', 'url': 'https://sgccetp.com.cn/'},
         'powerbeijing': {'name': '北京京能电子商务平台', 'url': 'http://www.powerbeijing-ec.com'},
-        'ccccltd': {'name': '中交集团供应链管理系统', 'url': 'http://ec.ccccltd.cn/'},
+        'ccccltd': {'name': '中交招采网', 'url': 'https://zjzcw.iccec.cn/'},
         'jchc': {'name': '江苏交通控股', 'url': 'https://zbcg.jchc.cn/portal'},
         'minmetals': {'name': '中国五矿集团供应链管理平台', 'url': 'https://ec.minmetals.com.cn/'},
         'sunwoda': {'name': '欣旺达SRM', 'url': 'https://srm.sunwoda.com/'},
@@ -101,7 +102,7 @@ def get_default_sites():
         'xcmg': {'name': '徐工全球数字化供应链系统平台', 'url': 'http://xdsc.xcmg.com:8985/'},
         'xinecai': {'name': '安天智采', 'url': 'http://www.xinecai.com'},
         'ariba': {'name': '远景SAP系统', 'url': 'https://service.ariba.com/'},
-        'faw': {'name': '中国一汽电子招标采购交易平台', 'url': 'https://srm.etp.faw.cn/staging'},
+        'faw': {'name': '中国一汽电子招标采购交易平台', 'url': 'https://etp.faw.cn/'},
     }
 
 
@@ -203,7 +204,13 @@ class MonitorCore:
     def _init_crawlers(self) -> List:
         """初始化所有爬虫"""
         crawlers = []
-        crawler_config = self.config.get('crawler', {})
+        self.crawler_load_errors = []
+
+        def load_error(name, error):
+            self.crawler_load_errors.append({'name': name, 'error': error, 'status': 'load_failed'})
+            self.log(f"[来源加载失败] {name}: {error}")
+
+        crawler_config = dict(self.config.get('crawler', {}))
         crawler_config['search_keywords'] = self.keywords[:3]
         
         # 获取启用的网站列表
@@ -212,15 +219,6 @@ class MonitorCore:
         # 1. 加载内置爬虫类
         crawler_classes = get_all_crawlers()
         
-        for name in enabled:
-            if name in crawler_classes:
-                try:
-                    crawler = crawler_classes[name](crawler_config)
-                    crawlers.append(crawler)
-                    self.log(f"[OK] Loaded crawler: {name}")
-                except Exception as e:
-                    self.log(f"[WARN] Failed to load crawler {name}: {e}")
-        
         # 判断是否使用Selenium模式
         use_selenium = crawler_config.get('use_selenium', False)
         self.log(f"[DEBUG] Selenium模式: {'启用' if use_selenium else '禁用'}")
@@ -228,7 +226,10 @@ class MonitorCore:
         # 2. 加载默认内置网站
         if use_selenium:
             try:
-                from crawler.selenium_crawler import SeleniumCrawler, SELENIUM_AVAILABLE, IMPORT_ERROR_MSG
+                try:
+                    from .crawler.selenium_crawler import SeleniumCrawler, SELENIUM_AVAILABLE, IMPORT_ERROR_MSG
+                except ImportError:
+                    from crawler.selenium_crawler import SeleniumCrawler, SELENIUM_AVAILABLE, IMPORT_ERROR_MSG
                 self.log(f"[DEBUG] Selenium可用: {SELENIUM_AVAILABLE}")
                 if not SELENIUM_AVAILABLE:
                     self.log(f"[WARN] Selenium模块导入失败: {IMPORT_ERROR_MSG}，回退到普通模式")
@@ -236,8 +237,21 @@ class MonitorCore:
             except ImportError as e:
                 self.log(f"[WARN] Selenium模块文件加载失败: {e}，回退到普通模式")
                 use_selenium = False
+        crawler_config['use_selenium'] = use_selenium
+
+        for name in enabled:
+            if name in crawler_classes:
+                try:
+                    crawler = crawler_classes[name](crawler_config)
+                    crawlers.append(crawler)
+                    self.log(f"[OK] Loaded crawler: {name}")
+                except Exception as e:
+                    load_error(name, str(e))
         
-        from crawler.custom import CustomCrawler
+        try:
+            from .crawler.custom import CustomCrawler
+        except ImportError:
+            from crawler.custom import CustomCrawler
         default_sites = get_default_sites()
         
         for key in enabled:
@@ -252,24 +266,31 @@ class MonitorCore:
                         self.log(f"[OK] Loaded site: {site['name']}")
                     crawlers.append(crawler)
                 except Exception as e:
-                    self.log(f"[WARN] Failed to load site {site['name']}: {e}")
+                    load_error(site['name'], str(e))
+            elif key not in crawler_classes:
+                load_error(key, '未识别的网站标识，请重新选择来源')
         
         # 3. 加载用户自定义爬虫
         custom_sites = self.config.get('custom_sites', [])
-        for site in custom_sites:
+        for index, site in enumerate(custom_sites, 1):
+            name = f'自定义网站 {index}'
             try:
-                name = site.get('name', 'Unknown')
-                url = site.get('url', '')
-                if name and url:
-                    if use_selenium:
-                        crawler = SeleniumCrawler(crawler_config, name, url, headless=True)
-                        self.log(f"[OK] Loaded custom (Selenium): {name}")
-                    else:
-                        crawler = CustomCrawler(crawler_config, name, url)
-                        self.log(f"[OK] Loaded custom crawler: {name}")
-                    crawlers.append(crawler)
+                if not isinstance(site, dict):
+                    raise ValueError('网站配置格式错误，请在网站源管理中重新添加')
+                name = str(site.get('name') or '').strip() or name
+                url = str(site.get('url') or '').strip()
+                parsed = urlsplit(url)
+                if parsed.scheme.lower() not in ('http', 'https') or not parsed.hostname:
+                    raise ValueError('列表页 URL 无效，请填写完整的 http:// 或 https:// 地址')
+                if use_selenium:
+                    crawler = SeleniumCrawler(dict(crawler_config, custom_site=True), name, url, headless=True)
+                    self.log(f"[OK] Loaded custom (Selenium): {name}")
+                else:
+                    crawler = CustomCrawler(crawler_config, name, url)
+                    self.log(f"[OK] Loaded custom crawler: {name}")
+                crawlers.append(crawler)
             except Exception as e:
-                self.log(f"[WARN] Failed to load custom crawler {site.get('name')}: {e}")
+                load_error(name, str(e))
         
         return crawlers
     
@@ -293,15 +314,66 @@ class MonitorCore:
         self.log(f"Start crawling at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         
         all_matched_bids = []
-        failed_sites = []
+        failed_sites = list(getattr(self, 'crawler_load_errors', []))
         total_crawlers = len(self.crawlers)
+        source_error = '' if total_crawlers else '没有可用的采集来源，本轮未抓取网站。请在网站源管理中添加并保存自定义网站，或启用内置网站；若已配置，请检查来源加载失败提示。'
+        if source_error:
+            self.log(f'[配置错误] {source_error}')
         
         # AI 过滤统计
         ai_stats = {
             'keyword_matched': [],  # 关键词匹配的项目 (title, url)
             'ai_approved': [],      # AI 判定相关的项目 (title, url, reason)
             'ai_rejected': [],      # AI 判定不相关的项目 (title, url, reason)
+            'ai_pending': [],
         }
+
+        seen = set()
+
+        def process_bid(bid):
+            try:
+                from .crawler.listing import is_notice_noise
+            except ImportError:
+                from crawler.listing import is_notice_noise
+            if is_notice_noise(bid.title, bid.url):
+                self.storage.remove_pending_ai(bid)
+                return False
+            if bid.unique_id in seen:
+                return False
+            seen.add(bid.unique_id)
+            if self.storage.exists(bid):
+                self.storage.remove_pending_ai(bid)
+                return False
+            result = self.matcher.match_any(bid.title, bid.content)
+            if not result.matched:
+                self.storage.remove_pending_ai(bid)
+                return False
+            ai_stats['keyword_matched'].append({'title': bid.title, 'url': bid.url})
+            if self.ai_guard:
+                relevant, reason = self.ai_guard.check_relevance(
+                    bid.title, bid.content or "", stop_event=stop_event)
+                entry = {'title': bid.title, 'url': bid.url, 'reason': reason}
+                if relevant is None:
+                    self.storage.save_pending_ai(bid, reason)
+                    ai_stats['ai_pending'].append(entry)
+                    self.log(f"[AI待复核] {bid.title[:40]}: {reason}，下轮重试")
+                    return False
+                self.storage.remove_pending_ai(bid)
+                if relevant is False:
+                    ai_stats['ai_rejected'].append(entry)
+                    return False
+                ai_stats['ai_approved'].append(entry)
+            saved = self.storage.save(bid, notified=False)
+            self.storage.remove_pending_ai(bid)
+            if saved:
+                all_matched_bids.append(bid)
+            return saved
+
+        # Retry persisted AI failures even if the source no longer lists the item.
+        for bid in self.storage.get_pending_ai():
+            if stop_event and stop_event.is_set():
+                break
+            process_bid(bid)
         
         for idx, crawler in enumerate(self.crawlers, 1):
             # 检查停止信号
@@ -326,9 +398,10 @@ class MonitorCore:
                     # 爬取失败
                     failed_sites.append({
                         'name': crawler.name,
-                        'error': 'Failed to fetch data (possibly blocked)'
+                        'error': getattr(crawler, 'last_error', '') or '未能获取公告，请检查来源入口和网络',
+                        'status': getattr(crawler, 'last_status', 'fetch_failed'),
                     })
-                    self.log(f"[FAILED] {crawler.name}: Website may be blocking requests!")
+                    self.log(f"[FAILED] {crawler.name}: {failed_sites[-1]['error']}")
                     continue
                 
                 # 匹配关键字
@@ -339,49 +412,25 @@ class MonitorCore:
                         self.log("检测到停止信号，中断匹配")
                         break
                     
-                    result = self.matcher.match_any(bid.title, bid.content)
-                    
-                    if result.matched:
-                        # 记录关键词匹配的项目
-                        ai_stats['keyword_matched'].append({
-                            'title': bid.title,
-                            'url': bid.url
-                        })
-                        
-                        # AI 二次过滤 (如果启用)
-                        if self.ai_guard:
-                            ai_relevant, ai_reason = self.ai_guard.check_relevance(bid.title, bid.content or "")
-                            if not ai_relevant:
-                                ai_stats['ai_rejected'].append({
-                                    'title': bid.title,
-                                    'url': bid.url,
-                                    'reason': ai_reason
-                                })
-                                self.log(f"[AI过滤] 跳过: {bid.title[:30]}... (原因: {ai_reason})")
-                                continue
-                            else:
-                                ai_stats['ai_approved'].append({
-                                    'title': bid.title,
-                                    'url': bid.url,
-                                    'reason': ai_reason
-                                })
-                        
-                        if not self.storage.exists(bid):
-                            self.storage.save(bid, notified=False)
-                            all_matched_bids.append(bid)
-                            matched_count += 1
+                    if process_bid(bid):
+                        matched_count += 1
                 
                 self.log(f"[OK] {crawler.name}: Found {len(bids)} items, {matched_count} new matches")
+                if getattr(crawler, 'last_status', '') in ('partial', 'partial_load'):
+                    warning = getattr(crawler, 'last_error', '') or '页面加载超时后提取了已加载内容，可能漏采'
+                    failed_sites.append({'name': crawler.name, 'error': warning, 'status': crawler.last_status})
+                    self.log(f"[部分采集] {crawler.name}: {warning}")
                 
             except Exception as e:
                 failed_sites.append({'name': crawler.name, 'error': str(e)})
                 self.log(f"[ERROR] {crawler.name}: {e}")
         
         # 发送通知
-        if all_matched_bids:
-            self.log(f"Sending notifications for {len(all_matched_bids)} new items...")
-            self._send_notifications(all_matched_bids)
-        else:
+        if not (stop_event and stop_event.is_set()) and self.notify_method:
+            pending = self.storage.get_unnotified()
+            if pending:
+                self._send_notifications(pending, stop_event=stop_event)
+        if not all_matched_bids and not source_error:
             self.log("No new matching items found")
         
         # 报告失败的网站
@@ -425,7 +474,10 @@ class MonitorCore:
         
         # 关闭共享浏览器以释放内存
         try:
-            from crawler.selenium_crawler import SharedBrowserManager
+            try:
+                from .crawler.selenium_crawler import SharedBrowserManager
+            except ImportError:
+                from crawler.selenium_crawler import SharedBrowserManager
             SharedBrowserManager.close()
             self.log("✅ 已关闭共享浏览器，释放内存")
         except:
@@ -435,38 +487,45 @@ class MonitorCore:
             'new_count': len(all_matched_bids),
             'failed_sites': failed_sites,
             'total_crawlers': len(self.crawlers),
+            'source_error': source_error,
             'ai_stats': ai_stats
         }
     
-    def _send_notifications(self, bids: List[BidInfo]):
-        """发送通知"""
-        success = False
-        
+    def _send_notifications(self, bids: List[BidInfo], stop_event=None):
+        """只确认每个已配置渠道均成功的记录；成功渠道在后续重试中跳过。"""
+        import hashlib
+        targets = []
         if self.notify_method in ('email', 'both') and self.email_notifier:
+            address = self.email or self.email_notifier.receiver
+            if address:
+                targets.append(('email', address, self.email_notifier))
+        if self.notify_method in ('sms', 'both') and self.sms_notifier and self.phone:
+            targets.append(('sms', self.phone, self.sms_notifier))
+        if not targets:
+            return
+        complete = {bid.unique_id for bid in bids}
+        for channel, address, notifier in targets:
+            if stop_event and stop_event.is_set():
+                return
+            recipient = hashlib.sha256(address.strip().encode()).hexdigest()
+            delivered = self.storage.delivered_ids(channel, recipient)
+            pending = [bid for bid in bids if bid.unique_id not in delivered]
+            if not pending:
+                continue
+            success = False
             try:
-                if self.email:
-                    # 临时修改收件人
-                    original_receiver = self.email_notifier.receiver
-                    self.email_notifier.receiver = self.email
-                    success = self.email_notifier.send(bids)
-                    self.email_notifier.receiver = original_receiver
+                if channel == 'email':
+                    previous = notifier.receiver
+                    try:
+                        notifier.receiver = address
+                        success = bool(notifier.send(pending))
+                    finally:
+                        notifier.receiver = previous
                 else:
-                    success = self.email_notifier.send(bids)
-                
-                if success:
-                    self.log(f"[OK] Email sent to {self.email or self.email_notifier.receiver}")
-            except Exception as e:
-                self.log(f"[ERROR] Email failed: {e}")
-        
-        if self.notify_method in ('sms', 'both') and self.sms_notifier:
-            try:
-                if self.phone:
-                    success = self.sms_notifier.send(self.phone, bids)
-                    if success:
-                        self.log(f"[OK] SMS sent to {self.phone}")
-            except Exception as e:
-                self.log(f"[ERROR] SMS failed: {e}")
-        
-        if success:
-            for bid in bids:
-                self.storage.mark_notified(bid)
+                    success = bool(notifier.send(address, pending))
+            except Exception:
+                self.log(f"[ERROR] {channel} 通知失败，保留待重试")
+            self.storage.record_delivery(pending, channel, recipient, success)
+            if not success:
+                complete.difference_update(bid.unique_id for bid in pending)
+        self.storage.mark_notified([bid.url for bid in bids if bid.unique_id in complete])

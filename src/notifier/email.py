@@ -84,9 +84,9 @@ class EmailNotifier:
             # 连接并发送
             if self.use_ssl:
                 context = ssl.create_default_context()
-                server = smtplib.SMTP_SSL(self.smtp_server, self.smtp_port, context=context)
+                server = smtplib.SMTP_SSL(self.smtp_server, self.smtp_port, context=context, timeout=30)
             else:
-                server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+                server = smtplib.SMTP(self.smtp_server, self.smtp_port, timeout=30)
                 server.starttls()
             
             server.login(self.sender, self.password)
