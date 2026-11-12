@@ -1,14 +1,16 @@
 # BidMonitor AI · 招标监控与销售线索工作台
 
-同一仓库保留两条独立版本线。请选择对应分支，在不同目录中运行；两版的配置和数据库不共用。
+`main` 同时包含团队工作台与原版桌面修复版 1.7.6。两版使用不同的源码和运行目录，配置与数据库互相独立。
 
 | 版本 | 获取位置 | 适用场景 | 启动入口 |
 | --- | --- | --- | --- |
 | 团队工作台 | [`main`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/main) | 全行业项目搜索、项目详情、团队线索跟进 | `python run_workbench.py` |
-| 原版桌面修复版 1.7.6 | [`maintenance/original-v1.7`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/maintenance/original-v1.7) | Windows 桌面关键词监控、AI 二次筛选、多渠道通知 | `python run.py` |
+| 原版桌面修复版 1.7.6 | [`main/original_desktop`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/main/original_desktop) | Windows 桌面关键词监控、AI 二次筛选、多渠道通知 | `python run_original.py` 或 `python run.py` |
 | 原始归档版 1.7 | [`v1.7-original`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/v1.7-original) 标签 | 查看、下载和运行未经本轮维护修改的历史版本 | `python run.py` |
 
-原版修复版的更新通过 PR 合入维护分支，工作台更新通过 PR 合入 `main`。标签保留历史版本；更新分支不会删除原始归档标签。
+原版维护源码位于 `original_desktop/src/`，工作台仍使用根目录的 `src/` 和 `server/`。根目录 `run.py` 已转到 1.7.6 桌面维护版，工作台继续使用 `run_workbench.py`。
+
+[`maintenance/original-v1.7`](https://github.com/zhiqianzheng/BidMonitor-AI/tree/maintenance/original-v1.7) 继续保留独立原版维护线，归档标签也保留。以后维护分支的更新需要通过 PR 同步到 `main/original_desktop/`；两个分支不会自动同步。
 
 ## 团队工作台
 
@@ -53,15 +55,15 @@ python -m venv .venv
 Windows 建议使用带 Tkinter 的 Python 3.10 或更高版本；浏览器模式需要本机安装 Google Chrome。
 
 ```powershell
-git clone --branch maintenance/original-v1.7 https://github.com/zhiqianzheng/BidMonitor-AI.git BidMonitor-Original
+git clone --branch main https://github.com/zhiqianzheng/BidMonitor-AI.git BidMonitor-Original
 cd BidMonitor-Original
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m pip install selenium webdriver-manager
-.\.venv\Scripts\python.exe run.py
+.\.venv\Scripts\python.exe run_original.py
 ```
 
-浏览器驱动首次准备可能需要联网。选择普通模式可采集静态 HTML；动态页面可尝试浏览器模式。短信、语音等通知需要对应服务账号、权限及额外 SDK，按所选通知服务安装和配置。
+也可以直接运行 `python original_desktop/run.py`。从根目录启动时，程序会切换到 `original_desktop/` 保存桌面版数据。浏览器驱动首次准备可能需要联网。选择普通模式可采集静态 HTML；动态页面可尝试浏览器模式。短信、语音等通知需要对应服务账号、权限及额外 SDK，按所选通知服务安装和配置。
 
 ### 首次使用
 
@@ -75,9 +77,9 @@ python -m venv .venv
 
 ## 数据、配置和版本隔离
 
-- 每个版本使用独立的克隆目录和虚拟环境，不在两版之间复制或共用 SQLite 数据库。
-- 原版默认在自己的运行目录保存 `user_config.json`、`data/bids.db` 和 `output_log.txt`；配置可能包含 API Key、通知服务凭据和联系人信息。
-- 工作台使用自己目录下的数据文件；不要将原版数据库路径配置为工作台数据库路径。
+- 同一 `main` 克隆目录可启动两版，也可分别克隆后运行；两版不得共用 SQLite 数据库。
+- 原版在 `original_desktop/` 下保存 `user_config.json`、`data/bids.db` 和 `output_log.txt`；配置可能包含 API Key、通知服务凭据和联系人信息。
+- 工作台默认使用根目录下的 `data/bids.db`；原版使用 `original_desktop/data/bids.db`。原版可选 YAML 配置只读取 `original_desktop/config/config.yaml`，不会读取工作台的配置。
 - 转发源码或发布包时，排除私人配置、数据库、日志、导出结果、浏览器资料及访问凭据。仓库不附带个人配置、采集数据库或 Windows 免安装包。
 - 更换代码版本前先单独备份本机数据。代码回退不会自动恢复数据库、配置或已经运行的程序。
 
@@ -95,7 +97,7 @@ git clone --branch v1.7-original https://github.com/zhiqianzheng/BidMonitor-AI.g
 - 浏览器模式帮助读取动态页面，不能保证通过验证码、登录、会员限制或站点访问控制。遇到限制会报告原因；不会把未抓取成功当作正常空结果。
 - 自定义网站使用通用解析逻辑，不保证适配任意页面、脚本跳转或专有接口；优先提供公开公告列表页，必要时需增加专用适配。
 - 截止时间、预算、采购单位等字段取决于来源是否公开及解析结果；未知字段不应被当作已验证值，最终以来源原文为准。
-- 一次实跑成功只证明该时间、该入口和该模式的结果，不代表全网持续完整覆盖。原版 1.7.6 已完成本地 99 项检查，并对仅配置自定义来源的普通模式和真实 Chrome 模式做过采集验证；Windows 免安装包需另行构建和验证。
+- 一次实跑成功只证明该时间、该入口和该模式的结果，不代表全网持续完整覆盖。原版 1.7.6 维护线已完成本地 99 项检查，并对仅配置自定义来源的普通模式和真实 Chrome 模式做过采集验证；Windows 免安装包需另行构建和验证。
 
 ## 许可证
 
