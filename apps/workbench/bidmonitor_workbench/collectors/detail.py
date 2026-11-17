@@ -19,8 +19,6 @@ def public_url(url):
     parsed = urlsplit(url)
     if parsed.scheme not in ("http", "https") or not parsed.hostname or parsed.username or parsed.password:
         raise ValueError("来源链接必须是公开的 HTTP/HTTPS 网页")
-    if parsed.port not in (None, 80, 443):
-        raise ValueError("来源链接仅支持标准网页端口")
     for addr in socket.getaddrinfo(parsed.hostname, parsed.port or 443, type=socket.SOCK_STREAM):
         if not ipaddress.ip_address(addr[4][0]).is_global:
             raise ValueError("不能采集本机或内网地址")
@@ -64,9 +62,9 @@ def fetch_page(url, *, session=None, data=None):
                             raise ValueError('公开分页入口重定向到其他站点，停止提交分页参数')
                         current = target
                         continue
-                    if response.status_code == 429:
+                    if response.status_code in (401, 403, 429):
                         from .feeds import FeedUnavailable, retry_seconds
-                        raise FeedUnavailable('来源限制访问（HTTP 429），暂停请求并等待冷却后续采', 'blocked',
+                        raise FeedUnavailable(f'来源限制访问（HTTP {response.status_code}），跳过该来源', 'blocked',
                                               max(3600, retry_seconds(response.headers.get('Retry-After'))))
                     response.raise_for_status()
                     content_type = response.headers.get("Content-Type", "text/html").lower()
@@ -94,8 +92,6 @@ def fetch_page(url, *, session=None, data=None):
                     return html, current
             raise ValueError("来源重定向过多")
     except requests.RequestException:
-        if urlsplit(current).hostname == "ec.ceec.net.cn":
-            return browser_page(current)
         raise ValueError("来源访问失败或超时，请稍后重试，也可直接打开原文") from None
 
 
@@ -103,9 +99,10 @@ def check_html_limit(html):
     # Some portals return a rate-limit page with HTTP 200.
     soup = BeautifulSoup(html, 'lxml')
     heading = ' '.join(n.get_text(' ', strip=True) for n in soup.select('title,h1,h2'))
-    if re.search('访问过于频繁|请求过于频繁|Too Many Requests', heading, re.I):
+    text = soup.get_text(' ', strip=True)
+    if re.search('访问过于频繁|请求过于频繁|Too Many Requests|访问被拒绝|安全验证|人机验证|验证码|Access Denied|Just a moment', heading, re.I) or (len(text) < 2000 and re.search('请完成验证|请输入验证码|访问被拒绝|verify you are human|aliyun_waf_', text, re.I)):
         from .feeds import FeedUnavailable
-        raise FeedUnavailable('原站限流提示页（HTTP 200），暂停请求并等待冷却后续采', 'blocked', 3600)
+        raise FeedUnavailable('原站返回限流或安全验证页，跳过该来源', 'blocked', 3600)
 
 
 def normalized_date(value):

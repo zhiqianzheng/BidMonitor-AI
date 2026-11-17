@@ -1,0 +1,3 @@
+# Optional directory refresh tools; runtime workbench does not require json5.
+json5>=0.9
+requests>=2.31

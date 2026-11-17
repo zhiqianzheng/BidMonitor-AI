@@ -73,7 +73,7 @@ def direct_sources(base):
         if key == 'gov-61':
             result.append(dict(id='direct-'+key, name=s['name'], province=s['province'], kind=s['kind'],
                                url='https://www.ccgp-shaanxi.gov.cn/', adapter='province_shaanxi_home', route_key=key,
-                               channel='省站直采', scope='省市县公开首页 9 类公告及正文；深层查询需验证码，非全量'))
+                               channel='省站直采', scope='省市县公开首页公告标题、原始链接及发布时间；深层查询需验证码，非全量'))
         elif key == 'trade-43':
             result.append(dict(id='direct-'+key, name=s['name'], province=s['province'], kind=s['kind'],
                                url='https://www.hnsggzy.com/', adapter='province_hunan_trade', route_key=key,

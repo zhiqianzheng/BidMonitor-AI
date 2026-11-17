@@ -93,6 +93,13 @@ def catalogue():
                             scope='全国平台已汇聚的该企业公开公告，非企业站直连或全量')
     from .provincial import direct_sources
     rows.extend(direct_sources(rows))
+    import json
+    from pathlib import Path
+    extra = Path(__file__).with_name('extra_sources.json')
+    rows.extend(json.loads(extra.read_text(encoding='utf-8')))
+    from .sectors import source_sectors
+    for source in rows:
+        source["sectors"] = source_sectors(source)
     return rows
 
 

@@ -664,7 +664,6 @@ def hunan_notices(section, json_fetch):
 
 def collect_hunan_trade(source, stop, pages, json_fetch):
     from .provincial import clean_text
-    from .detail import extract_detail
     state = copy.deepcopy(source.get('checkpoint') or {})
     cursor = max(pages+1, int(state.get('page', pages+1)))
     numbers = list(dict.fromkeys(list(range(1, pages+1))+list(range(max(pages+1, cursor-1), cursor+pages))))
@@ -705,12 +704,6 @@ def collect_hunan_trade(source, stop, pages, json_fetch):
                     link = urljoin(source['url'], '/')+'#/resources/transactionDetail/'+route+'?'+urlencode(query)
                     row = dict(title=title, url=link, published_at=date, source=source['name'], region=source['province'],
                                notice_type=classify_notice(title), deadline=notice.get('bidDocReferEndTime') or '')
-                    if notice.get('noticeContent'):
-                        try:
-                            body = extract_detail('<article>'+notice['noticeContent']+'</article>', link)
-                            row.update({k: body[k] for k in ('content','budget','purchaser','agency','project_no') if body.get(k)})
-                        except ValueError:
-                            warnings.append(f'湖南公告 {identity} 正文尚不可用，保留有效列表记录')
                     page_rows[link] = row
             rows.update(page_rows)
             checked += 1
@@ -748,7 +741,6 @@ def shaanxi_home_headers():
 
 def collect_shaanxi_home(source, stop, json_fetch):
     from .provincial import clean_text
-    from .detail import extract_detail
     categories = ['001011,001012,001013,001014,001016,001019',
                   '001021,001022,001023,001024,001025,001026,001029,001006',
                   '001031,001032', '001004,001006', '001053,001052,00105B',
@@ -777,12 +769,6 @@ def collect_shaanxi_home(source, stop, json_fetch):
                                notice_type=classify_notice(title), purchaser=record.get('purchaser') or '',
                                agency=record.get('agency') or '', project_no=record.get('openTenderCode') or '',
                                budget=budget+'元' if budget else '', deadline=record.get('openTenderTime') or '')
-                    if record.get('content'):
-                        try:
-                            body = extract_detail('<article>'+record['content']+'</article>', link)
-                            row['content'] = body['content']
-                        except ValueError:
-                            warnings.append('陕西部分公告正文未公开，保留有效列表记录')
                     rows[link] = row
             except ValueError as error:
                 warnings.append(f'陕西 {region}/{level}/{category}：{error}')

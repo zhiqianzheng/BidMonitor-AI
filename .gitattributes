@@ -1,0 +1,2 @@
+# Preserve literal whitespace in CSV evidence, including quoted page titles.
+research/source-census/*.csv -whitespace

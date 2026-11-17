@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urldefrag, urlsplit
 from .taxonomy import NOTICE_TYPES, INDUSTRIES, CATEGORIES, classify_notice, suggest_category, suggest_industry
+from .taxonomy import is_result_notice, DISCOVERY_TYPES
 from .availability import availability_state, availability_fields
 
 
@@ -89,6 +90,7 @@ class WorkbenchStore:
                     project_id TEXT NOT NULL REFERENCES projects(id),
                     PRIMARY KEY(source_id, project_id)
                 );
+                CREATE INDEX IF NOT EXISTS idx_project_sources_project ON project_sources(project_id);
             """)
             source_columns = {r[1] for r in db.execute('PRAGMA table_info(workbench_sources)')}
             if 'search_name' not in source_columns:
@@ -105,6 +107,7 @@ class WorkbenchStore:
     def connection(self):
         db = sqlite3.connect(self.db_path, timeout=30)
         db.row_factory = sqlite3.Row
+        db.create_function("is_result_notice", 2, is_result_notice, deterministic=True)
         db.execute("PRAGMA foreign_keys=ON")
         try:
             with db:
@@ -163,15 +166,15 @@ class WorkbenchStore:
             self.upsert_project(dict(row) | {"published_at": row["publish_date"]})
 
     def search(self, q="", region="", notice_type="", source="", date_from="", date_to="",
-               scope="all", limit=20, offset=0, tracked=False, industry="", category="", availability="active", refine=""):
+               scope="all", limit=20, offset=0, tracked=False, industry="", category="", availability="all", refine="", source_ids=None, source_names=()):
         if availability not in ("active", "open", "unknown", "closed", "all"):
             raise ValueError("未知截止状态筛选")
         checked_at = datetime.now(timezone.utc)
-        clauses, args = [], []
+        clauses, args = ["is_result_notice(p.title,p.notice_type)=0"], []
         # Each keyword adds an AND clause before counting and pagination.
         for term in [*q.strip().split()[:12], *refine.strip().split()]:
             escaped = term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
-            cols = ("p.title",) if scope == "title" else ("p.title", "p.content", "p.purchaser", "p.project_no")
+            cols = ("p.title",)
             clauses.append("(" + " OR ".join(c + " LIKE ? ESCAPE '\\'" for c in cols) + ")")
             args.extend(["%" + escaped + "%"] * len(cols))
         types = [notice_type] if isinstance(notice_type, str) else (notice_type or [])
@@ -180,7 +183,7 @@ class WorkbenchStore:
             clauses.append("p.notice_type IN (" + ",".join("?" for _ in types) + ")")
             args.extend(types)
         for col, value in (("region", region),
-                           ("industry", industry), ("category", category)):
+                           ("industry", industry if source_ids is None else ""), ("category", category)):
             if value:
                 clauses.append("p." + col + "=?")
                 args.append(value)
@@ -202,6 +205,16 @@ class WorkbenchStore:
         if states:
             clauses.append("announcement_state(p.deadline,p.notice_type,p.title) IN (" + ",".join("?" for _ in states) + ")")
             args.extend(states)
+        if source_ids is not None:
+            manual = " OR (p.source IN ('手动录入','') AND p.industry=?)" if industry else ""
+            clauses.append("(p.id IN (SELECT ps.project_id FROM project_sources ps "
+                           "JOIN scoped_source_ids si ON si.id=ps.source_id) "
+                           "OR (NOT EXISTS (SELECT 1 FROM project_sources known WHERE known.project_id=p.id) AND "
+                           "((p.source IN (SELECT name FROM scoped_source_names) AND p.source NOT IN ('手动录入',''))"
+                           + manual + ")))")
+            if industry:
+                args.append(industry)
+
         where = " WHERE " + " AND ".join(clauses) if clauses else ""
         base = " FROM projects p LEFT JOIN leads l ON l.project_id=p.id"
         with self.connection() as db:
@@ -209,6 +222,13 @@ class WorkbenchStore:
                                lambda deadline, kind, title: availability_state(deadline, kind, title, checked_at),
                                deterministic=True)
             db.execute("BEGIN")
+            if source_ids is not None:
+                # Temporary tables avoid SQLite parameter limits with thousands
+                # of sources and constrain counting/export before pagination.
+                db.execute("CREATE TEMP TABLE scoped_source_ids(id TEXT PRIMARY KEY)")
+                db.execute("CREATE TEMP TABLE scoped_source_names(name TEXT PRIMARY KEY)")
+                db.executemany("INSERT OR IGNORE INTO scoped_source_ids VALUES (?)", ((key,) for key in source_ids))
+                db.executemany("INSERT OR IGNORE INTO scoped_source_names VALUES (?)", ((name,) for name in source_names))
             total = db.execute("SELECT COUNT(*)" + base + where, args).fetchone()[0]
             rows = db.execute("""
                 SELECT p.id,p.title,p.url,p.source,p.region,p.industry,p.category,p.notice_type,p.published_at,p.deadline,
@@ -337,7 +357,7 @@ class WorkbenchStore:
 
     def meta(self):
         with self.connection() as db:
-            total = db.execute("SELECT count(*) FROM projects").fetchone()[0]
+            total = db.execute("SELECT count(*) FROM projects WHERE is_result_notice(title,notice_type)=0").fetchone()[0]
             ready = db.execute("SELECT count(*) FROM projects WHERE detail_status='ready'").fetchone()[0]
             stages = {r[0]: r[1] for r in db.execute("SELECT stage,count(*) FROM leads GROUP BY stage")}
             return {
@@ -348,7 +368,7 @@ class WorkbenchStore:
                 "sources": [r[0] for r in db.execute('''SELECT source FROM projects WHERE source<>''
                     UNION SELECT s.search_name FROM workbench_sources s JOIN project_sources ps ON ps.source_id=s.id
                     WHERE s.search_name<>'' ORDER BY 1''')],
-                "notice_types": NOTICE_TYPES, "stage_options": STAGES,
+                "notice_types": DISCOVERY_TYPES, "stage_options": STAGES,
                 "industries": sorted(set(INDUSTRIES) | {r[0] for r in db.execute('SELECT DISTINCT industry FROM projects')}),
                 "categories": CATEGORIES,
                 "runs": [dict(r) for r in db.execute("SELECT * FROM collection_runs ORDER BY id DESC LIMIT 50")],

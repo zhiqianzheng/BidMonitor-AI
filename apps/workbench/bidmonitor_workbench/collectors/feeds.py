@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 from .detail import fetch_page, public_url, normalized_date, MAX_BYTES
 from .government import parse_announcements as parse_ccgp
 from .ceec import parse_announcements as parse_ceec
+from ..storage.availability import CHINA_TIME
 from ..storage.taxonomy import classify_notice
 from ..storage.workbench import is_notice
 
@@ -140,7 +141,37 @@ def national_type(row):
 
 
 def collect_source(source, stop, pages=3, html_fetch=fetch_page, json_fetch=public_json):
+    from ..storage.taxonomy import is_result_notice
+    result = _collect_source(source, stop, pages, html_fetch, json_fetch)
+    original = result['rows']
+    result['rows'] = [{k: row[k] for k in ('title', 'url', 'published_at', 'source', 'region', 'notice_type') if k in row}
+                      for row in original if not is_result_notice(row.get('title', ''), row.get('notice_type', ''))]
+    # A source's future bid/opening date is not a verified publication date.
+    today = datetime.now(CHINA_TIME).date().isoformat()
+    uncertain = 0
+    for row in result['rows']:
+        published = normalized_date(str(row.get('published_at') or ''))
+        if published and published > today:
+            row['published_at'] = ''
+            uncertain += 1
+    if uncertain:
+        if not result.get('warnings'):
+            result['retryable'] = False
+        result.setdefault('warnings', []).append(f'{uncertain} 条公告的发布日期晚于当前日期，已标为待核实')
+    excluded = len(original) - len(result['rows'])
+    if original and not result['rows']:
+        result['empty_ok'] = True
+    result['blocked'] = result.get('blocked', False) or any(re.search(r'HTTP (?:401|403|429)|安全验证|验证码|限制访问|限流提示页|访问受限', warning) for warning in result.get('warnings', []))
+    if excluded:
+        result['message'] += f'；已排除 {excluded} 条结果类公告'
+    return result
+
+
+def _collect_source(source, stop, pages=3, html_fetch=fetch_page, json_fetch=public_json):
     """Return rows plus a factual scope/partial-result report; no database side effects."""
+    if source['adapter'] == 'generic':
+        from .generic import collect_generic
+        return collect_generic(source, stop, pages, html_fetch)
     if source['adapter'].startswith('province_'):
         from .provincial import collect_province
         return collect_province(source, stop, pages, html_fetch, json_fetch)
@@ -287,18 +318,14 @@ def enterprise_row(source, record):
                     url=f'https://www.crccep.cn/findNotices?columnId={column}&noticeId={key}',
                     published_at=record.get('publishTime') or '', deadline=record.get('bidEndTime') or '',
                     purchaser=record.get('orgSimpleName') or record.get('purCompanyName') or '',
-                    project_no=record.get('tenderProjectCode') or '', notice_type=classify_notice(title))
+                    project_no=record.get('tenderProjectCode') or '',
+                    notice_type='中标结果' if str(record.get('noticeType')) in ('3', '5') else classify_notice(title))
     key, title = str(record.get('businessCode') or ''), record.get('businessTitle') or ''
     if not re.fullmatch(r'[A-Za-z0-9_-]+', key) or not title or record.get('businessType') != 'NOTICE':
         return None
-    soup = BeautifulSoup(record.get('businessContentText') or '', 'lxml')
-    for node in soup.select('script,style'):
-        node.decompose()
-    content = soup.get_text('\n', strip=True)
-    kind = classify_notice(content[:400])
+    kind = classify_notice(record.get('polymerizeTypeName') or title)
     return dict(title=title[:500], source=source['name'],
                 url=f'https://c.cnbm.com.cn/cnbm-portal-view/#/procurementDetail?noticeCode={key}',
                 published_at=record.get('releaseTime') or '', deadline=record.get('stopTime') or '',
                 purchaser=record.get('tenderName') or '', project_no=record.get('projectCode') or '',
-                notice_type=kind if kind != '其他' else classify_notice(record.get('polymerizeTypeName') or title),
-                content=content[:200000] if len(content) >= 100 else '')
+                notice_type=kind)
