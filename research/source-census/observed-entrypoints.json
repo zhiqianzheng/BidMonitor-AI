@@ -1,0 +1,122 @@
+[
+  {
+    "name": "澳门公共采购网站",
+    "url": "https://www.pcp.gov.mo/",
+    "province": "澳门",
+    "kind": "政府采购",
+    "evidence_url": "https://www.gcs.gov.mo/news/detail/zh-hans/V26GV6hp62",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "澳门财政局采购资讯",
+    "url": "https://www.dsf.gov.mo/zh-hans/about/tenderInfo",
+    "province": "澳门",
+    "kind": "政府采购",
+    "evidence_url": "https://www.dsf.gov.mo/zh-hans/about/tenderInfo",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "澳门财政局中央采购",
+    "url": "https://www.dsf.gov.mo/zh-hans/guia-management/asset",
+    "province": "澳门",
+    "kind": "政府采购",
+    "evidence_url": "https://www.dsf.gov.mo/zh-hans/guia-management/asset",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "香港政府物流服务署采购服务",
+    "url": "https://www.gld.gov.hk/zh-cn/our-services/procurement/",
+    "province": "香港",
+    "kind": "政府采购",
+    "evidence_url": "https://www.gov.hk/sc/business/businessgov/",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "香港政府采购及合约管理系统",
+    "url": "https://pcms2.gld.gov.hk/iprod/#/home?lang-setting=zh-CN",
+    "province": "香港",
+    "kind": "政府采购",
+    "evidence_url": "https://www.gov.hk/sc/business/businessgov/",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "香港政府招标公告",
+    "url": "https://www.fstb.gov.hk/tb/sc/business/gov_procurement/tender-notices.htm",
+    "province": "香港",
+    "kind": "政府采购",
+    "evidence_url": "https://www.gov.hk/sc/business/businessgov/",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "香港政府物流服务署公开招标XML",
+    "url": "https://pcms2.gld.gov.hk/iportal/TenderNotice.xml",
+    "province": "香港",
+    "kind": "政府采购",
+    "evidence_url": "https://data.gov.hk/sc-data/dataset/hk-gld-gldetb-gldetb-tendernotice/resource/e590632c-363f-4baf-91f4-e7331dc6e7e0",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "韶关市公共资源交易一体化平台",
+    "url": "https://portal.ythpt.sg.gov.cn/",
+    "province": "广东",
+    "kind": "公共资源",
+    "evidence_url": "https://portal.ythpt.sg.gov.cn/",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "韶关市公共资源交易平台（粤公平统一门户）",
+    "url": "https://ygp.gdzwfw.gov.cn/ggzy-portal/#/440200/index",
+    "province": "广东",
+    "kind": "公共资源",
+    "evidence_url": "https://portal.ythpt.sg.gov.cn/gtzyjygcxx/detail?id=5ef2a4277a144b5090c549fefefec267&nav=03",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "江门市公共资源交易平台（粤公平统一门户）",
+    "url": "https://ygp.gdzwfw.gov.cn/ggzy-portal/#/440700/index",
+    "province": "广东",
+    "kind": "公共资源",
+    "evidence_url": "https://www.jiangmen.gov.cn/attachment/0/370/370436/3458343.pdf",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "珠海市公共资源交易平台（粤公平统一门户）",
+    "url": "https://ygp.gdzwfw.gov.cn/#/440400/index",
+    "province": "广东",
+    "kind": "公共资源",
+    "evidence_url": "https://csbidding.csair.cn/cms/nfhk/webfile/zbcg/zbgg/20251209/1183122435667394560.html",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "清远市公共资源交易原门户",
+    "url": "https://www.qyggzy.cn/index2.html",
+    "province": "广东",
+    "kind": "公共资源",
+    "evidence_url": "https://www.qyggzy.cn/index2.html",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "中国供销农产品集团采购公告",
+    "url": "https://www.chinacapg.com/",
+    "province": "全国",
+    "kind": "企业招标",
+    "evidence_url": "https://www.chinacapg.com/",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "宁夏农垦集团集采交易平台",
+    "url": "https://nxnkjt.etrading.cn/",
+    "province": "宁夏",
+    "kind": "企业招标",
+    "evidence_url": "https://nxnkjt.etrading.cn/",
+    "review_note": "官方公开网页中定位的线索；仍需核验实际采购栏目、有效性与迁移关系"
+  },
+  {
+    "name": "台湾政府电子采购网",
+    "url": "https://web.pcc.gov.tw/",
+    "province": "台湾",
+    "kind": "政府采购",
+    "evidence_url": "https://www.moi.gov.tw/News_Link.aspx?n=20284&sms=13552",
+    "review_note": "官网公开链接；仍待访问与栏目核验"
+  }
+]

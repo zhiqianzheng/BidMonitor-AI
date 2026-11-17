@@ -1,0 +1,3190 @@
+{
+  "note": "这些是待查检索任务，并非已经搜索或完成的证据；2023地区基线尚待最新官方区划校对。",
+  "tasks": [
+    {
+      "query": "北京 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "北京 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "北京 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "北京 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "北京 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "北京 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "北京 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "北京 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "天津 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "天津 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "天津 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "天津 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "天津 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "天津 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "天津 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "天津 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河北 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河北 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河北 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河北 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河北 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河北 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河北 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河北 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山西 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山西 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山西 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山西 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山西 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山西 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山西 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山西 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "内蒙古 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "内蒙古 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "内蒙古 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "内蒙古 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "内蒙古 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "内蒙古 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "内蒙古 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "内蒙古 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "辽宁 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "辽宁 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "辽宁 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "辽宁 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "辽宁 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "辽宁 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "辽宁 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "辽宁 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "吉林 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "吉林 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "吉林 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "吉林 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "吉林 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "吉林 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "吉林 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "吉林 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "黑龙江 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "黑龙江 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "黑龙江 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "黑龙江 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "黑龙江 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "黑龙江 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "黑龙江 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "黑龙江 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "上海 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "上海 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "上海 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "上海 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "上海 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "上海 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "上海 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "上海 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江苏 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江苏 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江苏 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江苏 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江苏 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江苏 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江苏 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江苏 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "浙江 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "浙江 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "浙江 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "浙江 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "浙江 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "浙江 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "浙江 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "浙江 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "安徽 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "安徽 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "安徽 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "安徽 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "安徽 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "安徽 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "安徽 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "安徽 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "福建 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "福建 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "福建 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "福建 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "福建 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "福建 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "福建 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "福建 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江西 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江西 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江西 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江西 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江西 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江西 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江西 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "江西 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山东 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山东 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山东 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山东 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山东 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山东 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山东 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "山东 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河南 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河南 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河南 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河南 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河南 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河南 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河南 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "河南 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖北 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖北 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖北 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖北 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖北 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖北 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖北 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖北 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖南 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖南 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖南 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖南 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖南 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖南 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖南 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "湖南 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广东 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广东 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广东 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广东 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广东 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广东 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广东 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广东 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广西 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广西 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广西 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广西 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广西 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广西 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广西 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "广西 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "海南 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "海南 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "海南 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "海南 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "海南 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "海南 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "海南 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "海南 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "重庆 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "重庆 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "重庆 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "重庆 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "重庆 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "重庆 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "重庆 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "重庆 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "四川 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "四川 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "四川 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "四川 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "四川 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "四川 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "四川 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "四川 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "贵州 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "贵州 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "贵州 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "贵州 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "贵州 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "贵州 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "贵州 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "贵州 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "云南 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "云南 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "云南 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "云南 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "云南 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "云南 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "云南 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "云南 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "西藏 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "西藏 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "西藏 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "西藏 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "西藏 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "西藏 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "西藏 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "西藏 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "陕西 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "陕西 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "陕西 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "陕西 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "陕西 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "陕西 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "陕西 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "陕西 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "甘肃 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "甘肃 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "甘肃 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "甘肃 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "甘肃 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "甘肃 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "甘肃 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "甘肃 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "青海 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "青海 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "青海 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "青海 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "青海 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "青海 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "青海 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "青海 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "宁夏 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "宁夏 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "宁夏 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "宁夏 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "宁夏 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "宁夏 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "宁夏 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "宁夏 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "新疆 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "新疆 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "新疆 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "新疆 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "新疆 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "新疆 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "新疆 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "新疆 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "兵团 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "兵团 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "兵团 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "兵团 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "兵团 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "兵团 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "兵团 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "兵团 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "香港 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "香港 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "香港 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "香港 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "香港 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "香港 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "香港 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "香港 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "澳门 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "澳门 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "澳门 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "澳门 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "澳门 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "澳门 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "澳门 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "澳门 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "台湾 政府采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "台湾 公共资源交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "台湾 国企阳光采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "台湾 医药招采 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "台湾 高校招标采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "台湾 金融集中采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "台湾 农村产权交易 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "台湾 小额工程采购 官方 网站 导航",
+      "status": "pending",
+      "dimension": "province-type"
+    },
+    {
+      "query": "北京市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "天津市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "石家庄市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "唐山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "秦皇岛市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "邯郸市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "邢台市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "保定市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "张家口市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "承德市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "沧州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "廊坊市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "衡水市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "太原市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "大同市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阳泉市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "长治市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "晋城市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "朔州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "晋中市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "运城市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "忻州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "临汾市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "吕梁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "呼和浩特市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "包头市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "乌海市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "赤峰市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "通辽市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "鄂尔多斯市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "呼伦贝尔市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "巴彦淖尔市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "乌兰察布市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "兴安盟 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "锡林郭勒盟 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阿拉善盟 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "沈阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "大连市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "鞍山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "抚顺市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "本溪市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "丹东市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "锦州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "营口市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阜新市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "辽阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "盘锦市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "铁岭市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "朝阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "葫芦岛市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "长春市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "吉林市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "四平市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "辽源市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "通化市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "白山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "松原市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "白城市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "延边朝鲜族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "哈尔滨市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "齐齐哈尔市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "鸡西市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "鹤岗市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "双鸭山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "大庆市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "伊春市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "佳木斯市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "七台河市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "牡丹江市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "黑河市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "绥化市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "大兴安岭地区 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "上海市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "南京市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "无锡市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "徐州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "常州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "苏州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "南通市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "连云港市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "淮安市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "盐城市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "扬州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "镇江市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "泰州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宿迁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "杭州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宁波市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "温州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "嘉兴市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "湖州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "绍兴市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "金华市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "衢州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "舟山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "台州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "丽水市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "合肥市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "芜湖市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "蚌埠市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "淮南市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "马鞍山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "淮北市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "铜陵市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "安庆市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "黄山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "滁州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阜阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宿州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "六安市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "亳州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "池州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宣城市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "福州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "厦门市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "莆田市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "三明市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "泉州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "漳州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "南平市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "龙岩市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宁德市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "南昌市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "景德镇市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "萍乡市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "九江市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "新余市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "鹰潭市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "赣州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "吉安市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宜春市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "抚州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "上饶市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "济南市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "青岛市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "淄博市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "枣庄市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "东营市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "烟台市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "潍坊市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "济宁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "泰安市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "威海市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "日照市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "临沂市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "德州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "聊城市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "滨州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "菏泽市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "郑州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "开封市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "洛阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "平顶山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "安阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "鹤壁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "新乡市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "焦作市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "濮阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "许昌市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "漯河市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "三门峡市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "南阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "商丘市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "信阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "周口市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "驻马店市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "武汉市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "黄石市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "十堰市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宜昌市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "襄阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "鄂州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "荆门市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "孝感市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "荆州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "黄冈市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "咸宁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "随州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "恩施土家族苗族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "长沙市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "株洲市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "湘潭市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "衡阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "邵阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "岳阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "常德市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "张家界市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "益阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "郴州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "永州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "怀化市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "娄底市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "湘西土家族苗族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "广州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "韶关市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "深圳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "珠海市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "汕头市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "佛山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "江门市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "湛江市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "茂名市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "肇庆市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "惠州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "梅州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "汕尾市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "河源市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阳江市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "清远市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "东莞市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "中山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "潮州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "揭阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "云浮市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "南宁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "柳州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "桂林市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "梧州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "北海市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "防城港市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "钦州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "贵港市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "玉林市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "百色市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "贺州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "河池市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "来宾市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "崇左市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "海口市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "三亚市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "三沙市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "儋州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "重庆市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "成都市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "自贡市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "攀枝花市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "泸州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "德阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "绵阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "广元市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "遂宁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "内江市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "乐山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "南充市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "眉山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宜宾市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "广安市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "达州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "雅安市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "巴中市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "资阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阿坝藏族羌族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "甘孜藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "凉山彝族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "贵阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "六盘水市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "遵义市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "安顺市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "毕节市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "铜仁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "黔西南布依族苗族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "黔东南苗族侗族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "黔南布依族苗族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "昆明市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "曲靖市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "玉溪市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "保山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "昭通市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "丽江市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "普洱市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "临沧市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "楚雄彝族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "红河哈尼族彝族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "文山壮族苗族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "西双版纳傣族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "大理白族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "德宏傣族景颇族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "怒江傈僳族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "迪庆藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "拉萨市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "日喀则市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "昌都市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "林芝市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "山南市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "那曲市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阿里地区 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "西安市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "铜川市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "宝鸡市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "咸阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "渭南市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "延安市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "汉中市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "榆林市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "安康市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "商洛市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "兰州市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "嘉峪关市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "金昌市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "白银市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "天水市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "武威市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "张掖市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "平凉市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "酒泉市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "庆阳市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "定西市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "陇南市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "临夏回族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "甘南藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "西宁市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "海东市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "海北藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "黄南藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "海南藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "果洛藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "玉树藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "海西蒙古族藏族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "银川市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "石嘴山市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "吴忠市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "固原市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "中卫市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "乌鲁木齐市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "克拉玛依市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "吐鲁番市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "哈密市 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "昌吉回族自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "博尔塔拉蒙古自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "巴音郭楞蒙古自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阿克苏地区 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "克孜勒苏柯尔克孜自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "喀什地区 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "和田地区 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "伊犁哈萨克自治州 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "塔城地区 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "阿勒泰地区 公共资源交易 政府采购 官方 网站",
+      "status": "pending",
+      "dimension": "city"
+    },
+    {
+      "query": "农、林、牧、渔业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "采矿业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "制造业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "电力、热力、燃气及水生产和供应业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "建筑业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "批发和零售业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "交通运输、仓储和邮政业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "住宿和餐饮业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "信息传输、软件和信息技术服务业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "金融业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "房地产业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "租赁和商务服务业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "科学研究和技术服务业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "水利、环境和公共设施管理业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "居民服务、修理和其他服务业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "教育 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "卫生和社会工作 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "文化、体育和娱乐业 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "公共管理、社会保障和社会组织 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    },
+    {
+      "query": "国际组织 招标采购 官方平台 网站导航",
+      "status": "pending",
+      "dimension": "industry"
+    }
+  ]
+}

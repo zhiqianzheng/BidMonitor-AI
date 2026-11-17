@@ -14,10 +14,11 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .storage.workbench import WorkbenchStore, ConflictError, STAGES, NOTICE_TYPES
-from .collectors.detail import fetch_page, fetch_detail
+from .collectors.detail import fetch_page
 from .collectors.ceec import parse_announcements
 from .collectors.government import SOURCE as GOVERNMENT_SOURCE, parse_announcements as parse_government
 from .storage.taxonomy import INDUSTRIES, CATEGORIES
+from .collectors.sectors import SECTORS, INDUSTRY_SOURCE_SECTORS, matches_industry
 from .collectors.collection import CollectionService
 from .collectors.feeds import collect_source
 
@@ -107,6 +108,14 @@ class NoteInput(Input):
     body: str = Field(min_length=1, max_length=10000)
 
 
+class CollectionScopeInput(Input):
+    source_ids: list[str] | None = Field(default=None, max_length=100000)
+
+
+class SourceImportInput(Input):
+    csv: str = Field(min_length=1, max_length=2000000)
+
+
 class ScheduleInput(Input):
     enabled: bool
     interval_minutes: int = Field(ge=15, le=1440)
@@ -175,7 +184,7 @@ def create_app(db_path=None):
     @app.get("/api/meta")
     def meta():
         return store.meta() | {"collection": collector.snapshot(), "schedule": collector.schedule_snapshot(), "source_config": SOURCE,
-                               "source_configs": collector.sources(), "scope": "all_industries",
+                               "source_configs": collector.sources(), "source_sectors": SECTORS, "source_industry_sectors": INDUSTRY_SOURCE_SECTORS, "scope": "all_industries",
                                "timezone": str(datetime.now().astimezone().tzinfo)}
 
     def get_project(key):
@@ -184,34 +193,44 @@ def create_app(db_path=None):
             raise KeyError(key)
         return item
 
+    def query_source_scope(industry, sector=''):
+        if not industry and not sector:
+            return None
+        return collector.source_scope(industry, sector)
+
     @app.get("/api/projects")
     def search(q: str = Query("", max_length=300), region: str = "", notice_type: list[str] | None = Query(None, max_length=100),
                source: str = "", date_from: date | None = None, date_to: date | None = None,
                scope: Literal["all", "title"] = "all", limit: int = Query(20, ge=1, le=100),
                offset: int = Query(0, ge=0), tracked: bool = False, industry: str = "", category: str = "",
-               availability: Literal["active", "open", "unknown", "closed", "all"] = "active",
-               refine: str = Query("", max_length=300)):
+               availability: Literal["active", "open", "unknown", "closed", "all"] = "all",
+               refine: str = Query("", max_length=300), source_sector: str = ""):
         if date_from and date_to and date_from > date_to:
             raise ValueError("开始日期不能晚于结束日期")
+        sources = query_source_scope(industry, source_sector)
         return store.search(q, region, notice_type, source, str(date_from or ""), str(date_to or ""),
-                            scope, limit, offset, tracked, industry, category, availability, refine)
+                            scope, limit, offset, tracked, industry, category, availability, refine,
+                            source_ids=sources['ids'] if sources is not None else None,
+                            source_names=sources['names'] if sources is not None else ())
 
     @app.get("/api/export")
     def export(q: str = "", region: str = "", notice_type: list[str] | None = Query(None, max_length=100), source: str = "",
                date_from: date | None = None, date_to: date | None = None,
                scope: Literal["all", "title"] = "all", tracked: bool = False, industry: str = "", category: str = "",
-               availability: Literal["active", "open", "unknown", "closed", "all"] = "active",
-               refine: str = Query("", max_length=300)):
+               availability: Literal["active", "open", "unknown", "closed", "all"] = "all",
+               refine: str = Query("", max_length=300), source_sector: str = ""):
         if date_from and date_to and date_from > date_to:
             raise ValueError("开始日期不能晚于结束日期")
+        sources = query_source_scope(industry, source_sector)
         rows = store.search(q, region, notice_type, source, str(date_from or ""), str(date_to or ""),
-                            scope, 10000, 0, tracked, industry, category, availability, refine)["items"]
+                            scope, 10000, 0, tracked, industry, category, availability, refine,
+                            source_ids=sources['ids'] if sources is not None else None,
+                            source_names=sources['names'] if sources is not None else ())["items"]
         stream = io.StringIO(newline="")
         writer = csv.writer(stream)
-        writer.writerow(["标题", "地区", "行业（可人工校正）", "采购类别", "类型", "来源", "发布日期", "预算", "采购人", "阶段", "负责人", "原文", "截止时间（无时区按北京时间）", "截止状态"])
+        writer.writerow(["标题", "原始URL", "公告发布时间"])
         for row in rows:
-            values = [str(row.get(k) or "") for k in ("title", "region", "industry", "category", "notice_type", "source",
-                      "published_at", "budget", "purchaser", "stage", "owner", "url", "deadline", "availability_label")]
+            values = [str(row.get(k) or "") for k in ("title", "url", "published_at")]
             writer.writerow(["'" + v if v.lstrip().startswith(("=", "+", "-", "@")) else v for v in values])
         return Response("\ufeff" + stream.getvalue(), media_type="text/csv; charset=utf-8",
                         headers={"Content-Disposition": "attachment; filename=bidmonitor-projects.csv"})
@@ -232,17 +251,8 @@ def create_app(db_path=None):
 
     @app.post("/api/projects/{key}/detail")
     def refresh_detail(key: str):
-        project = get_project(key)
-        if not project["url"]:
-            raise ValueError("此项目未填写原文链接")
-        try:
-            data = fetch_detail(project["url"])
-            store.set_detail(key, data)
-        except Exception as error:
-            message = str(error) if isinstance(error, ValueError) else "详情采集失败，请稍后重试或打开原文"
-            store.set_detail(key, error=message)
-            raise HTTPException(502, message) from error
-        return get_project(key)
+        get_project(key)
+        raise HTTPException(410, "工作台仅收录标题、原始链接和发布时间，请打开原始链接查看公告")
 
     @app.post("/api/projects/{key}/lead")
     def convert(key: str, body: OwnerInput):
@@ -268,17 +278,21 @@ def create_app(db_path=None):
         store.add_member(body.name)
         return {"members": store.meta()["members"]}
 
+    @app.post("/api/sources/import")
+    def import_sources(body: SourceImportInput):
+        return collector.import_sources(body.csv)
+
     @app.get("/api/sources")
-    def sources():
-        return {"items": collector.sources()}
+    def sources(industry: str = "", sector: str = ""):
+        return {"items": [s for s in collector.sources() if matches_industry(s, industry) and matches_industry(s, sector)]}
 
     @app.patch("/api/sources/{key}")
     def configure_source(key: str, body: SourceInput):
         return collector.enable(key, body.enabled)
 
     @app.post("/api/sources/{key}/collect")
-    def collect_one(key: str):
-        return collector.start(key)
+    def collect_one(key: str, industry: str = "", sector: str = ""):
+        return collector.start(key, industry=industry, sector=sector)
 
     @app.get("/api/schedule")
     def schedule():
@@ -289,12 +303,14 @@ def create_app(db_path=None):
         return collector.configure(**body.model_dump())
 
     @app.post("/api/collect")
-    def start_collection():
-        return collector.start()
+    def start_collection(pending_only: bool = False, industry: str = "", sector: str = "", source: str = "", body: CollectionScopeInput | None = None):
+        return collector.start(pending_only=pending_only, industry=industry, sector=sector, source_name=source,
+                               source_ids=body.source_ids if body is not None else None)
 
     @app.post("/api/collect/provincial")
-    def collect_provincial():
-        return collector.start(provincial=True)
+    def collect_provincial(industry: str = "", sector: str = "", body: CollectionScopeInput | None = None):
+        return collector.start(provincial=True, industry=industry, sector=sector,
+                               source_ids=body.source_ids if body is not None else None)
 
     @app.post("/api/collect/stop")
     def stop_collection():

@@ -54,3 +54,13 @@ def suggest_industry(title):
         ("物业|保洁|餐饮|法律|律师|会计|审计|人力资源", "商业服务"),
     )
     return next((label for pattern, label in rules if re.search(pattern, title)), "待分类")
+
+
+RESULT_TYPES = frozenset(('中标候选', '中标结果', '合同公告', '验收公告'))
+DISCOVERY_TYPES = tuple(kind for kind in NOTICE_TYPES if kind not in RESULT_TYPES)
+
+
+def is_result_notice(title, notice_type=''):
+    """Exclude award/result notices even when a correction has another type."""
+    return notice_type in RESULT_TYPES or bool(re.search(
+        r'中标|成交|定标|结果公告|结果公示|采购结果|招标结果|合同公告|合同公示|合同签订|履约验收|验收公告|验收结果', title or ''))

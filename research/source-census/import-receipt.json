@@ -1,0 +1,96 @@
+{
+  "imported_at": "2026-11-16T15:06:24+00:00",
+  "applied": true,
+  "national_complete": false,
+  "candidate_records": 18186,
+  "added": 13542,
+  "matched_existing_records": 4629,
+  "enriched_existing_sources": 4670,
+  "rejected": [
+    {
+      "name": "中衡设计集团工程咨询有限公司",
+      "url": "http://www.artsec.cn（https证书链不可信，走http；sippm.com.cn同站）/",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "www.ccgp.gov.cn)“政府采购严重违法失信行为信息记录”中的禁止参加政府采购活动期间。（以采购代理机构于投标（响应）截止时间当天在“信用中国”",
+      "url": "http://www.ccgp.gov.cn)“政府采购严重违法失信行为信息记录”中的禁止参加政府采购活动期间。（以采购代理机构于投标（响应）截止时间当天在“信用中国”/",
+      "reason": "label empty or too long"
+    },
+    {
+      "name": "www.creditchina.gov.cn)“记录失信被执行人或重大税收违法失信主体或政府采购严重违法失信行为”记录名单；不处",
+      "url": "http://www.creditchina.gov.cn)“记录失信被执行人或重大税收违法失信主体或政府采购严重违法失信行为”记录名单；不处/",
+      "reason": "label empty or too long"
+    },
+    {
+      "name": "www.creditchina.gov.cn)“记录失信被执行人或重大税收违法失信主体或政府采购严重违法失信行为”记录名单；不处于",
+      "url": "http://www.creditchina.gov.cn)“记录失信被执行人或重大税收违法失信主体或政府采购严重违法失信行为”记录名单；不处于/",
+      "reason": "label empty or too long"
+    },
+    {
+      "name": "www.creditchina.gov.cn)“记录失信被执行人或重大税收违法失信主体或政府采购严重违法失信行为”记录名单；不处于中国政府",
+      "url": "http://www.creditchina.gov.cn)“记录失信被执行人或重大税收违法失信主体或政府采购严重违法失信行为”记录名单；不处于中国政府/",
+      "reason": "label empty or too long"
+    },
+    {
+      "name": "www.creditchina.gov.cn）及中国政府采购网（http://www.ccgp.gov.cn/）查询结果为准，如相关失信记录已失效，供应商需提供",
+      "url": "http://www.creditchina.gov.cn）及中国政府采购网（http://www.ccgp.gov.cn/）查询结果为准，如相关失信记录已失效，供应商需提供",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "中车太原机车车辆有限公司",
+      "url": "https://www.crrcgo.cc ; https://www.crrcgc.cc/ty",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "上海新海信通信息技术有限公司",
+      "url": "https://www.crsc.cn（通购网 https://www.crscec.com）",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "http :// ggzy . shaoyang . gov . cn ) 获取 招标文件，并于 2026 年 12 月 8 日 9 点 30",
+      "url": "http://ggzy.shaoyang.gov.xn--cn),2026128930-3x8vr1cf65bbw7b6a116to0mp3bg5krsgqp7dhgzg/",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "中证房地产评估造价集团有限公司",
+      "url": "http://www.jszzzj.com（https证书过期，走http）/",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "湖北新产业技师学院",
+      "url": "http://s1.v6_ys.87895577.com/",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "https://xwbank.com(信息披露-采购公告)",
+      "url": "https://xwbank.com(信息披露-采购公告)/",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "中诚智信工程咨询集团股份有限公司",
+      "url": "http://www.zcglsz.com（https不可达，http跳转/dede/index.html）",
+      "reason": "域名格式无效"
+    },
+    {
+      "name": "http://www.sczzzb.com/ ）。进入“四川中志招标代理有限公司”官网—招标公告—点击欲报名项目采购公告—点击",
+      "url": "https://www.zcygov.xn--cn)-8n0aa5213eba590hca1046bda6529bnyei85cfa5094amkedah166ueai0250b._x0005_/",
+      "reason": "label empty or too long"
+    },
+    {
+      "name": "中禹苏建管理咨询有限公司",
+      "url": "http://www.zhongyusujian.com（https证书过期，走http）/",
+      "reason": "域名格式无效"
+    }
+  ],
+  "total_sources": 28222,
+  "new_sources_enabled": 11240,
+  "new_sources_disabled": 2302,
+  "new_source_states": {
+    "pending": 11240,
+    "error": 1777,
+    "blocked": 525
+  },
+  "source_snapshot_sha256": "4c316ae1fadd9719fb870018ce93b2cf2708f07c80510663dae60ceb2fc2ef82",
+  "backup_path": "/home/cian/DIY/BidMonitor-AI/runtime/source-census/backups/workbench-before-census-import-20261116T150624Z.sqlite3"
+}
